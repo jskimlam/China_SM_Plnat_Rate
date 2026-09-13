@@ -1,0 +1,864 @@
+<title>중국 SM 가동률 모니터</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+  /* ============ THEME TOKENS ============ */
+  :root{
+    color-scheme: light;
+    --page:      #f7f6f1;
+    --surface:   #fcfcfb;
+    --surface-2: #f0eee6;
+    --ink-1:     #16150f;
+    --ink-2:     #55534a;
+    --ink-3:     #8b887d;
+    --line:      #e3e0d5;
+    --border:    rgba(20,19,15,0.10);
+    --accent-rate:     #2a78d6;
+    --accent-rate-soft: rgba(42,120,214,0.10);
+    --accent-capa:     #eb6834;
+    --accent-capa-soft: rgba(235,104,52,0.10);
+    --good:     #0ca30c;
+    --warning:  #fab219;
+    --serious:  #ec835a;
+    --critical: #d03b3b;
+    --up:   #2a78d6;
+    --down: #e34948;
+    --shadow: 0 1px 2px rgba(20,19,15,0.06), 0 6px 20px rgba(20,19,15,0.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --page:      #0d0d0c;
+      --surface:   #1a1a19;
+      --surface-2: #232321;
+      --ink-1:     #ffffff;
+      --ink-2:     #c3c2b7;
+      --ink-3:     #8b887d;
+      --line:      #2c2c2a;
+      --border:    rgba(255,255,255,0.10);
+      --accent-rate:     #3987e5;
+      --accent-rate-soft: rgba(57,135,229,0.16);
+      --accent-capa:     #d95926;
+      --accent-capa-soft: rgba(217,89,38,0.16);
+      --up:   #3987e5;
+      --down: #e66767;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 6px 24px rgba(0,0,0,0.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --page:      #0d0d0c;
+    --surface:   #1a1a19;
+    --surface-2: #232321;
+    --ink-1:     #ffffff;
+    --ink-2:     #c3c2b7;
+    --ink-3:     #8b887d;
+    --line:      #2c2c2a;
+    --border:    rgba(255,255,255,0.10);
+    --accent-rate:     #3987e5;
+    --accent-rate-soft: rgba(57,135,229,0.16);
+    --accent-capa:     #d95926;
+    --accent-capa-soft: rgba(217,89,38,0.16);
+    --up:   #3987e5;
+    --down: #e66767;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 6px 24px rgba(0,0,0,0.4);
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{
+    background:var(--page);
+    color:var(--ink-1);
+    font-family:'Noto Sans KR', system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .disp{ font-family:'IBM Plex Sans KR','Noto Sans KR', system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .tab{ font-variant-numeric: tabular-nums; }
+
+  .wrap{
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 28px 20px 64px;
+    display:flex;
+    flex-direction:column;
+    gap: 28px;
+  }
+
+  /* ============ HEADER ============ */
+  .hero{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow{
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:.06em;
+    color:var(--accent-rate);
+    text-transform:uppercase;
+  }
+  .hero h1{
+    margin:0;
+    font-size: clamp(24px, 4vw, 32px);
+    font-weight:700;
+    letter-spacing:-0.01em;
+    text-wrap: balance;
+  }
+  .hero .meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap: 6px 18px;
+    font-size:13.5px;
+    color:var(--ink-2);
+  }
+  .hero .meta b{ color:var(--ink-1); font-weight:600; }
+
+  /* ============ SECTION HEADERS ============ */
+  .section-head{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:8px 20px;
+    margin-bottom:14px;
+  }
+  .section-head h2{
+    margin:0;
+    font-size:17px;
+    font-weight:700;
+  }
+  .section-head .sub{
+    font-size:12.5px;
+    color:var(--ink-3);
+  }
+
+  /* ============ KPI ROW ============ */
+  .kpi-row{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:12px;
+  }
+  .kpi{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:16px 18px;
+    box-shadow:var(--shadow);
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    min-width:0;
+  }
+  .kpi .label{ font-size:12.5px; color:var(--ink-3); }
+  .kpi .value-row{ display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
+  .kpi .value{ font-size:26px; font-weight:700; font-family:'IBM Plex Sans KR','Noto Sans KR',sans-serif; }
+  .kpi .delta{ font-size:13px; font-weight:600; display:inline-flex; align-items:center; gap:3px; }
+  .kpi .delta.up{ color:var(--up); }
+  .kpi .delta.down{ color:var(--down); }
+  .kpi .delta.flat{ color:var(--ink-3); }
+  .kpi .foot{ font-size:11.5px; color:var(--ink-3); }
+  .kpi svg.spark{ width:100%; height:26px; margin-top:2px; overflow:visible; }
+
+  /* ============ CARD SHELL ============ */
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:20px 20px 18px;
+    box-shadow:var(--shadow);
+  }
+
+  /* ============ CHANGE CARDS ============ */
+  .changes-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(258px, 1fr));
+    gap:12px;
+  }
+  .chg-card{
+    position:relative;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px 14px 12px 16px;
+    box-shadow:var(--shadow);
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .chg-card::before{
+    content:"";
+    position:absolute; left:0; top:12px; bottom:12px; width:4px;
+    border-radius:3px;
+    background:var(--stripe, var(--ink-3));
+  }
+  .chg-card.up{ --stripe: var(--up); }
+  .chg-card.down{ --stripe: var(--down); }
+  .chg-card.flat{ --stripe: var(--ink-3); }
+  .chg-top{ display:flex; justify-content:space-between; gap:8px; align-items:flex-start; }
+  .chg-name{ font-weight:700; font-size:14px; line-height:1.3; font-family:'IBM Plex Sans KR','Noto Sans KR',sans-serif;}
+  .chg-region{ font-size:11.5px; color:var(--ink-3); font-weight:500; }
+  .chg-tag{
+    flex:0 0 auto;
+    font-size:10.5px; font-weight:600; padding:3px 7px; border-radius:100px;
+    white-space:nowrap;
+  }
+  .chg-tag.rate{ background:var(--accent-rate-soft); color:var(--accent-rate); }
+  .chg-tag.stat{ background:var(--surface-2); color:var(--ink-2); }
+  .chg-rate-row{ display:flex; align-items:baseline; gap:8px; }
+  .chg-rate-row .r{ font-size:20px; font-weight:700; font-family:'IBM Plex Sans KR','Noto Sans KR',sans-serif;}
+  .chg-rate-row .arrow{ font-size:14px; color:var(--ink-3); }
+  .chg-rate-row .d{ font-size:12.5px; font-weight:700; }
+  .chg-status{ font-size:12px; color:var(--ink-2); line-height:1.45; }
+  .chg-status .arrow-i{ color:var(--ink-3); margin:0 3px; }
+  .chg-bottom{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:2px; }
+  .chg-capa{ font-size:11.5px; color:var(--ink-3); }
+  .chg-card svg.spark{ width:92px; height:28px; flex:0 0 auto; overflow:visible; }
+
+  /* ============ TRENDS ============ */
+  .trend-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  .chart-title{ font-size:13px; font-weight:700; margin:0 0 2px; }
+  .chart-sub{ font-size:11.5px; color:var(--ink-3); margin:0 0 10px; }
+  .chart-box{ position:relative; }
+  .chart-box svg{ width:100%; height:auto; display:block; overflow:visible; }
+  .axis-label{ fill:var(--ink-3); font-size:10.5px; font-family:'Noto Sans KR',sans-serif; }
+  .grid-line{ stroke:var(--line); stroke-width:1; shape-rendering:crispEdges; }
+  .end-label{ font-size:12px; font-weight:700; font-family:'IBM Plex Sans KR',sans-serif; }
+  .ref-label{ font-size:10px; fill:var(--ink-3); font-family:'Noto Sans KR',sans-serif; }
+  .hit{ fill:transparent; cursor:crosshair; }
+
+  /* ============ REGION BARS ============ */
+  .region-list{ display:flex; flex-direction:column; gap:0; }
+  .region-row{
+    display:grid;
+    grid-template-columns: 128px 1fr 58px;
+    align-items:center;
+    gap:10px;
+    padding:6px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .region-row:last-child{ border-bottom:none; }
+  .region-name{ font-size:13px; font-weight:600; }
+  .region-sub{ font-size:10.5px; color:var(--ink-3); display:block; font-weight:400; }
+  .region-bar-track{ position:relative; height:16px; background:var(--surface-2); border-radius:6px; overflow:hidden; }
+  .region-bar-fill{
+    position:absolute; left:0; top:0; height:100%;
+    background:var(--accent-rate);
+    border-radius:6px;
+    min-width:3px;
+  }
+  .region-bar-fill:focus-visible, .region-row:focus-within .region-bar-fill{ outline:2px solid var(--ink-1); outline-offset:1px; }
+  .region-pct{ font-size:12.5px; font-weight:700; text-align:right; font-family:'IBM Plex Sans KR',sans-serif;}
+
+  /* ============ STATUS MIX ============ */
+  .statusbar{ display:flex; height:28px; border-radius:8px; overflow:hidden; gap:2px; background:var(--surface); }
+  .statusbar .seg{ height:100%; min-width:2px; }
+  .status-legend{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:10px;
+    margin-top:14px;
+  }
+  .status-item{ display:flex; align-items:center; gap:8px; }
+  .status-dot{ width:10px; height:10px; border-radius:3px; flex:0 0 auto; }
+  .status-item .txt{ display:flex; flex-direction:column; line-height:1.3; }
+  .status-item .name{ font-size:12.5px; font-weight:600; }
+  .status-item .val{ font-size:11.5px; color:var(--ink-3); }
+
+  /* ============ TOOLTIP ============ */
+  #tip{
+    position:fixed;
+    pointer-events:none;
+    z-index:50;
+    background:var(--ink-1);
+    color:var(--page);
+    font-size:12px;
+    line-height:1.5;
+    border-radius:8px;
+    padding:8px 10px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.25);
+    transform:translate(-50%,-100%);
+    opacity:0;
+    transition:opacity .08s ease;
+    max-width:220px;
+  }
+  #tip.show{ opacity:1; }
+  #tip .tt-title{ font-weight:700; margin-bottom:2px; }
+  #tip .tt-row{ display:flex; justify-content:space-between; gap:10px; }
+
+  /* ============ FOOTER ============ */
+  .footnote{
+    font-size:12px;
+    color:var(--ink-3);
+    line-height:1.7;
+    border-top:1px solid var(--line);
+    padding-top:16px;
+  }
+  .footnote b{ color:var(--ink-2); }
+  .footnote ul{ margin:6px 0 0; padding-left:18px; }
+  .footnote li{ margin-bottom:3px; }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 860px){
+    .kpi-row{ grid-template-columns:repeat(2, 1fr); }
+    .trend-grid{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 480px){
+    .kpi-row{ grid-template-columns:1fr; }
+    .region-row{ grid-template-columns: 96px 1fr 50px; }
+    .status-legend{ grid-template-columns:repeat(2,1fr); }
+    .wrap{ padding:20px 16px 48px; }
+  }
+
+  :focus-visible{ outline:2px solid var(--accent-rate); outline-offset:2px; }
+
+  /* ============ ACCESS GATE ============ */
+  body:not(.unlocked) .wrap{ display:none; }
+  #gate{
+    position:fixed; inset:0; z-index:100;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--page);
+    padding:20px;
+  }
+  body.unlocked #gate{ display:none; }
+  .gate-box{
+    background:var(--surface); border:1px solid var(--border); border-radius:16px;
+    box-shadow:var(--shadow); padding:28px 26px; width:100%; max-width:320px;
+    display:flex; flex-direction:column; gap:12px;
+  }
+  .gate-box h2{ margin:0; font-size:16px; }
+  .gate-box p{ margin:0; font-size:12.5px; color:var(--ink-3); line-height:1.5; }
+  .gate-box input{
+    font: inherit; font-size:14px; padding:10px 12px; border-radius:8px;
+    border:1px solid var(--border); background:var(--page); color:var(--ink-1);
+  }
+  .gate-box button{
+    font: inherit; font-weight:700; font-size:13.5px; padding:10px 12px; border-radius:8px;
+    border:none; background:var(--accent-rate); color:#fff; cursor:pointer;
+  }
+  .gate-box .err{ font-size:12px; color:var(--down); min-height:16px; }
+</style>
+
+<div id="gate">
+  <form class="gate-box" id="gate-form" autocomplete="off">
+    <h2 class="disp">🔒 내부 자료 접근</h2>
+    <p>첨단구매1팀 내부용 가동률 트래커입니다. 접근 비밀번호를 입력하세요.</p>
+    <input type="password" id="gate-pw" placeholder="비밀번호" autofocus>
+    <button type="submit">입장</button>
+    <div class="err" id="gate-err"></div>
+  </form>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <span class="eyebrow">ICIS 기준 · 내부 DB 트래커 연동</span>
+    <h1 class="disp">중국 SM(스티렌모노머) 가동률 모니터</h1>
+    <div class="meta tab">
+      <span>데이터 기준 <b id="m-cur">-</b>주 (전주 <b id="m-prev">-</b> 대비)</span>
+      <span>설비 <b id="m-count">-</b>개 · <b id="m-regions">-</b>개 지역</span>
+      <span>추적 기간 <b id="m-span">-</b></span>
+    </div>
+  </header>
+
+  <!-- KPI ROW -->
+  <section class="kpi-row" id="kpi-row" aria-label="핵심 지표"></section>
+
+  <!-- WOW CHANGES -->
+  <section class="card">
+    <div class="section-head">
+      <h2 class="disp">이번 주 가동 변동</h2>
+      <span class="sub" id="chg-sub"></span>
+    </div>
+    <div class="changes-grid" id="changes-grid"></div>
+  </section>
+
+  <!-- TRENDS -->
+  <section class="trend-grid">
+    <div class="card">
+      <p class="chart-title disp">전체 평균 가동률 추이 (12주)</p>
+      <p class="chart-sub">캐파 가중평균 · 0~100% 전체 스케일</p>
+      <div class="chart-box"><svg id="chart-rate" viewBox="0 0 640 260" preserveAspectRatio="xMidYMid meet"></svg></div>
+    </div>
+    <div class="card">
+      <p class="chart-title disp">가동 중 캐파 추이 (12주)</p>
+      <p class="chart-sub">점선 = 최신주 총 설비 캐파(유휴분 포함)</p>
+      <div class="chart-box"><svg id="chart-capa" viewBox="0 0 640 260" preserveAspectRatio="xMidYMid meet"></svg></div>
+    </div>
+  </section>
+
+  <!-- REGION -->
+  <section class="card">
+    <div class="section-head">
+      <h2 class="disp">지역별 가동률 (최신주)</h2>
+      <span class="sub">캐파 큰 지역부터 정렬</span>
+    </div>
+    <div class="region-list" id="region-list"></div>
+  </section>
+
+  <!-- STATUS MIX -->
+  <section class="card">
+    <div class="section-head">
+      <h2 class="disp">설비 상태 분포 (최신주, 캐파 기준)</h2>
+      <span class="sub" id="status-sub"></span>
+    </div>
+    <div class="statusbar" id="statusbar"></div>
+    <div class="status-legend" id="status-legend"></div>
+  </section>
+
+  <footer class="footnote" id="footnote"></footer>
+
+</div>
+
+<div id="tip" role="status" aria-live="polite"></div>
+
+<script id="dashboard-data" type="application/json">
+{"weeks":["06/19","06/26","07/03","07/10","07/17","07/24","08/07","08/14","08/21","08/28","09/04","09/11"],"w_prev":"09/04","w_cur":"09/11","national":[{"week":"06/19","total_capa":22509000.0,"avg_rate":0.6874627926607135,"online_capa":15474100.0},{"week":"06/26","total_capa":22509000.0,"avg_rate":0.7118174952241326,"online_capa":16022300.0},{"week":"07/03","total_capa":22509000.0,"avg_rate":0.7333822026744857,"online_capa":16507700.0},{"week":"07/10","total_capa":22509000.0,"avg_rate":0.7151494957572526,"online_capa":16097300.0},{"week":"07/17","total_capa":22509000.0,"avg_rate":0.7109645030876538,"online_capa":16003100.0},{"week":"07/24","total_capa":22509000.0,"avg_rate":0.6898485050424275,"online_capa":15527800.0},{"week":"08/07","total_capa":22489000.0,"avg_rate":0.6834141135666326,"online_capa":15369300.0},{"week":"08/14","total_capa":22489000.0,"avg_rate":0.6716083418560185,"online_capa":15103800.0},{"week":"08/21","total_capa":22489000.0,"avg_rate":0.6512872960113834,"online_capa":14646800.0},{"week":"08/28","total_capa":22489000.0,"avg_rate":0.6477522344257193,"online_capa":14567300.0},{"week":"09/04","total_capa":22489000.0,"avg_rate":0.6491529192049447,"online_capa":14598800.0},{"week":"09/11","total_capa":22489000.0,"avg_rate":0.6612254880163636,"online_capa":14870300.0}],"changes":[{"company":"Jingbo Petrochemical","region":"Shandong","capa":600000,"rate_prev":0,"rate_cur":0.7,"status_prev":"7월17일부터 보수, 9월4일 합격품 생산 개시","status_cur":"9월4일 합격품 생산 개시, 저부하 생산","rate_changed":true,"spark":[0.7,0.6,0.7,0.7,0.65,0,0,0,0,0,0,0.7]},{"company":"Anqing Petrochemical (Sinopec) #2","region":"Anhui","capa":400000,"rate_prev":0.5,"rate_cur":0,"status_prev":"9월2일부터 보수, 재가동 11월15일 계획","status_cur":"9월2일부터 보수, 재가동 11월15일 계획","rate_changed":true,"spark":[0.75,0.75,0.75,0.75,0.75,0.75,0.7,0.7,0.7,0.7,0.5,0]},{"company":"Gulei Petrochemical","region":"Fujian","capa":600000,"rate_prev":0.6,"rate_cur":0.8,"status_prev":"저부하 생산, 증산 계획","status_cur":"증산 중","rate_changed":true,"spark":[0,0,1,0.8,0.8,0.8,0.6,0.6,0.6,0.6,0.6,0.8]},{"company":"Anhui Jiaxi Chemical","region":"Anhui","capa":350000,"rate_prev":0.8,"rate_cur":0.7,"status_prev":"생산 정상","status_cur":"감산","rate_changed":true,"spark":[0.9,0.8,0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.8,0.7]},{"company":"Shanghai SECCO Petrochemical","region":"Shanghai","capa":670000,"rate_prev":0.6,"rate_cur":0.55,"status_prev":"저부하 운전","status_cur":"저부하 운전","rate_changed":true,"spark":[0.65,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.55]},{"company":"Hebei Shengteng","region":"Hebei","capa":80000,"rate_prev":0.6,"rate_cur":0.6,"status_prev":"저부하 생산","status_cur":"저부하 운전","rate_changed":false,"spark":[0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.6,0.6,0.6,0.6]},{"company":"Wanhua Chemical","region":"Shandong","capa":650000,"rate_prev":0.9,"rate_cur":0.9,"status_prev":"증산 중","status_cur":"생산 정상","rate_changed":false,"spark":[1,1,1,1,1,1,1,1,0.7,0.7,0.9,0.9]},{"company":"Ningbo Daxie Petrochemical","region":"Zhejiang","capa":280000,"rate_prev":1,"rate_cur":1,"status_prev":"증산 중","status_cur":"생산 정상","rate_changed":false,"spark":[1,1,1,1,1,1,1,1,1,0.85,1,1]},{"company":"Ningbo Huatai Shengfu","region":"Zhejiang","capa":400000,"rate_prev":0.9,"rate_cur":0.9,"status_prev":"증산 중","status_cur":"생산 정상","rate_changed":false,"spark":[1,1,1,1,1,1,1,1,1,0.85,0.9,0.9]},{"company":"Lianyungang Petrochemical","region":"Jiangsu","capa":600000,"rate_prev":0.7,"rate_cur":0.7,"status_prev":"7월 중 70%대로 감산","status_cur":"9월20일부터 정기보수 개시 계획","rate_changed":false,"spark":[0.95,0.95,0.84,0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.7]},{"company":"Sinochem Quanzhou","region":"Fujian","capa":450000,"rate_prev":0.9,"rate_cur":0.9,"status_prev":"증산 중","status_cur":"생산 정상","rate_changed":false,"spark":[1,1,1,0.8,0.8,0.8,0.8,0.8,0.8,0.8,0.9,0.9]}],"regions":[{"region":"Zhejiang","capa":4415000.0,"rate":0.6933182332955833,"count":10},{"region":"Shandong","capa":4230000,"rate":0.5969267139479906,"count":12},{"region":"Guangdong","capa":2790000,"rate":0.645663082437276,"count":7},{"region":"Jiangsu","capa":2540000,"rate":0.5641732283464567,"count":8},{"region":"Liaoning","capa":1420000,"rate":0.9246478873239437,"count":6},{"region":"Jilin","capa":1060000,"rate":0.6716981132075471,"count":2},{"region":"Fujian","capa":1050000,"rate":0.8428571428571429,"count":2},{"region":"Anhui","capa":1010000,"rate":0.42277227722772276,"count":3},{"region":"Tianjin","capa":985000.0,"rate":0.7956852791878173,"count":3},{"region":"Shanghai","capa":670000,"rate":0.55,"count":1},{"region":"Guangxi","capa":600000,"rate":0.7,"count":1},{"region":"Hebei","capa":380000,"rate":0.9157894736842105,"count":2},{"region":"Xinjiang","capa":362000.0,"rate":0.8767955801104972,"count":2},{"region":"Heilongjiang","capa":225000.0,"rate":0.85,"count":1},{"region":"Ningxia","capa":200000,"rate":0.0,"count":1},{"region":"Hainan","capa":200000,"rate":0.6,"count":2},{"region":"Shaanxi","capa":120000,"rate":0.0,"count":1},{"region":"Hunan","capa":120000,"rate":0.75,"count":1},{"region":"Gansu","capa":85000.0,"rate":0.8705882352941177,"count":2},{"region":"Hubei","capa":27000.0,"rate":0.0,"count":1}],"status_mix":{"good":9752000.0,"warning":5700000,"serious":4510000,"critical":2527000.0},"total_capa_latest":22489000.0,"facility_count":68}
+</script>
+
+<script>
+(function(){
+  "use strict";
+
+  // ===== 접근 비밀번호 설정 =====
+  // 완전한 보안이 아니라 casual한 접근 제한용(간단 평문 비교). 원하는 값으로 바꿔서 사용.
+  var SITE_PASSWORD = 'sm2026';
+  var GATE_KEY = 'sm-china-dash-unlocked';
+  (function initGate(){
+    if (sessionStorage.getItem(GATE_KEY) === '1') {
+      document.body.classList.add('unlocked');
+      return;
+    }
+    var form = document.getElementById('gate-form');
+    var pwInput = document.getElementById('gate-pw');
+    var errEl = document.getElementById('gate-err');
+    form.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      if (pwInput.value === SITE_PASSWORD) {
+        sessionStorage.setItem(GATE_KEY, '1');
+        document.body.classList.add('unlocked');
+      } else {
+        errEl.textContent = '비밀번호가 올바르지 않습니다.';
+        pwInput.value = '';
+        pwInput.focus();
+      }
+    });
+  })();
+
+  // ===== 데이터 소스 설정 =====
+  // Apps Script 웹앱 배포 후 나오는 URL을 여기에 붙여넣으면 구글시트에서 실시간으로 데이터를 읽어옴.
+  // 비워두면(기본값) 이 파일에 내장된 스냅샷 데이터로 동작 — 오프라인/데모용, 매주 갱신되지 않음.
+  var DATA_URL = 'https://script.google.com/macros/s/AKfycbw4RfrjA2Z8CKqSCXuc1t4uZo8IiNbqPNyZKazlgN9f-s5SVAlMtWONBtkQF8HD8e9U/exec';
+  var EMBEDDED_DATA = JSON.parse(document.getElementById('dashboard-data').textContent);
+
+  var tip = document.getElementById('tip');
+
+  // ---------- formatters ----------
+  function mt(tons){
+    if (tons === null || tons === undefined) return '※ 원문 확인 필요';
+    return (tons/10000).toLocaleString('ko-KR', {minimumFractionDigits:1, maximumFractionDigits:1}) + '만톤';
+  }
+  function pct(v){
+    if (v === null || v === undefined) return '※ 원문 확인 필요';
+    return (v*100).toFixed(1) + '%';
+  }
+  function signedPctPoint(v){
+    var s = v >= 0 ? '+' : '';
+    return s + (v*100).toFixed(1) + '%p';
+  }
+  function signedMt(tons){
+    var s = tons >= 0 ? '+' : '';
+    return s + (tons/10000).toLocaleString('ko-KR', {minimumFractionDigits:1, maximumFractionDigits:1}) + '만톤';
+  }
+
+  // ---------- tooltip helpers ----------
+  function showTip(x, y, html){
+    tip.innerHTML = html;
+    tip.style.left = x + 'px';
+    tip.style.top = (y - 10) + 'px';
+    tip.classList.add('show');
+  }
+  function hideTip(){ tip.classList.remove('show'); }
+
+  function renderDashboard(DATA){
+
+  // ================= HEADER META =================
+  document.getElementById('m-cur').textContent = DATA.w_cur;
+  document.getElementById('m-prev').textContent = DATA.w_prev;
+  document.getElementById('m-count').textContent = DATA.facility_count;
+  document.getElementById('m-regions').textContent = DATA.regions.length;
+  document.getElementById('m-span').textContent = DATA.weeks[0] + ' ~ ' + DATA.weeks[DATA.weeks.length-1];
+
+  // ================= KPI ROW =================
+  var nat = DATA.national;
+  var curN = nat[nat.length-1], prevN = nat[nat.length-2];
+  var rateDelta = curN.avg_rate - prevN.avg_rate;
+  var capaDelta = curN.online_capa - prevN.online_capa;
+  var rateChangedCnt = DATA.changes.filter(function(c){ return c.rate_changed; }).length;
+  var statusOnlyCnt = DATA.changes.length - rateChangedCnt;
+
+  function miniSpark(values, colorClass){
+    var w = 100, h = 26, pad = 2;
+    var min = Math.min.apply(null, values), max = Math.max.apply(null, values);
+    if (max - min < 0.02) { max = min + 0.02; }
+    var n = values.length;
+    var pts = values.map(function(v,i){
+      var x = pad + i*(w-2*pad)/(n-1);
+      var y = pad + (h-2*pad) * (1 - (v-min)/(max-min));
+      return [x,y];
+    });
+    var path = pts.map(function(p,i){ return (i===0?'M':'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ');
+    var last = pts[pts.length-1], prevPt = pts[pts.length-2];
+    var lastSeg = 'M' + prevPt[0].toFixed(1)+','+prevPt[1].toFixed(1) + ' L' + last[0].toFixed(1)+','+last[1].toFixed(1);
+    return '<svg class="spark" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none">' +
+      '<path d="'+path+'" fill="none" stroke="var(--ink-3)" stroke-width="1.5" opacity="0.55" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<path d="'+lastSeg+'" fill="none" stroke="var('+colorClass+')" stroke-width="2" stroke-linecap="round"/>' +
+      '<circle cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="2.6" fill="var('+colorClass+')" stroke="var(--surface)" stroke-width="1.5"/>' +
+      '</svg>';
+  }
+
+  var kpis = [
+    {
+      label: '캐파 가중평균 가동률 (' + DATA.w_cur + ')',
+      value: pct(curN.avg_rate),
+      delta: signedPctPoint(rateDelta) + ' (전주 ' + pct(prevN.avg_rate) + ')',
+      dir: rateDelta > 0.0005 ? 'up' : (rateDelta < -0.0005 ? 'down' : 'flat'),
+      spark: miniSpark(nat.map(function(d){return d.avg_rate;}), rateDelta>=0 ? '--up' : '--down')
+    },
+    {
+      label: '가동 중 캐파 (' + DATA.w_cur + ')',
+      value: mt(curN.online_capa),
+      delta: signedMt(capaDelta) + ' (전주 ' + mt(prevN.online_capa) + ')',
+      dir: capaDelta > 0 ? 'up' : (capaDelta < 0 ? 'down' : 'flat'),
+      spark: miniSpark(nat.map(function(d){return d.online_capa;}), capaDelta>=0 ? '--up' : '--down')
+    },
+    {
+      label: '총 설비 캐파 (' + DATA.w_cur + ')',
+      value: mt(DATA.total_capa_latest),
+      delta: DATA.facility_count + '개 설비 · ' + DATA.regions.length + '개 지역',
+      dir: 'flat',
+      spark: null
+    },
+    {
+      label: '이번 주 변동 설비',
+      value: DATA.changes.length + '개',
+      delta: '가동률 변경 ' + rateChangedCnt + ' · 상태만 변경 ' + statusOnlyCnt,
+      dir: 'flat',
+      spark: null
+    }
+  ];
+
+  var kpiRow = document.getElementById('kpi-row');
+  kpis.forEach(function(k){
+    var el = document.createElement('div');
+    el.className = 'kpi';
+    var deltaClass = k.dir === 'flat' ? 'flat' : k.dir;
+    var arrow = k.dir === 'up' ? '▲' : (k.dir === 'down' ? '▼' : '');
+    el.innerHTML =
+      '<span class="label"></span>' +
+      '<div class="value-row"><span class="value tab"></span></div>' +
+      '<span class="foot tab"><span class="delta '+deltaClass+'">'+arrow+'</span> </span>' +
+      (k.spark ? k.spark : '');
+    el.querySelector('.label').textContent = k.label;
+    el.querySelector('.value').textContent = k.value;
+    var footEl = el.querySelector('.foot');
+    footEl.appendChild(document.createTextNode(' ' + k.delta));
+    kpiRow.appendChild(el);
+  });
+
+  // ================= WOW CHANGE CARDS =================
+  document.getElementById('chg-sub').textContent =
+    '총 ' + DATA.facility_count + '개 설비 중 ' + DATA.changes.length + '개 변동 · 가동률 변경 ' + rateChangedCnt + ' · 상태만 변경 ' + statusOnlyCnt;
+
+  var chgGrid = document.getElementById('changes-grid');
+  DATA.changes.forEach(function(c){
+    var dir = 'flat';
+    if (c.rate_changed) dir = (c.rate_cur > c.rate_prev) ? 'up' : 'down';
+    var card = document.createElement('div');
+    card.className = 'chg-card ' + dir;
+
+    var top = document.createElement('div');
+    top.className = 'chg-top';
+    var nameBox = document.createElement('div');
+    var nameEl = document.createElement('div');
+    nameEl.className = 'chg-name';
+    nameEl.textContent = c.company;
+    var regionEl = document.createElement('div');
+    regionEl.className = 'chg-region';
+    regionEl.textContent = c.region + ' · ' + mt(c.capa);
+    nameBox.appendChild(nameEl); nameBox.appendChild(regionEl);
+    var tag = document.createElement('span');
+    tag.className = 'chg-tag ' + (c.rate_changed ? 'rate' : 'stat');
+    tag.textContent = c.rate_changed ? '가동률 변경' : '상태만 변경';
+    top.appendChild(nameBox); top.appendChild(tag);
+
+    var rateRow = document.createElement('div');
+    rateRow.className = 'chg-rate-row tab';
+    var rSpan = document.createElement('span'); rSpan.className='r';
+    rSpan.textContent = pct(c.rate_prev) + ' → ' + pct(c.rate_cur);
+    rateRow.appendChild(rSpan);
+    if (c.rate_changed){
+      var dSpan = document.createElement('span');
+      dSpan.className = 'd ' + (dir === 'up' ? 'delta up' : 'delta down');
+      dSpan.style.color = dir === 'up' ? 'var(--up)' : 'var(--down)';
+      dSpan.textContent = signedPctPoint(c.rate_cur - c.rate_prev);
+      rateRow.appendChild(dSpan);
+    }
+
+    var statusEl = document.createElement('div');
+    statusEl.className = 'chg-status';
+    if (c.status_prev === c.status_cur){
+      statusEl.textContent = c.status_cur;
+    } else {
+      var s1 = document.createTextNode(c.status_prev);
+      var arrowI = document.createElement('span'); arrowI.className='arrow-i'; arrowI.textContent = '→';
+      var s2 = document.createTextNode(c.status_cur);
+      statusEl.appendChild(s1); statusEl.appendChild(arrowI); statusEl.appendChild(s2);
+    }
+
+    var bottom = document.createElement('div');
+    bottom.className = 'chg-bottom';
+    var sparkColor = dir === 'up' ? '--up' : (dir === 'down' ? '--down' : '--ink-3');
+    bottom.innerHTML = miniSpark(c.spark, sparkColor);
+
+    card.appendChild(top);
+    card.appendChild(rateRow);
+    card.appendChild(statusEl);
+    card.appendChild(bottom);
+    card.tabIndex = 0;
+    card.title = c.company + ' (' + DATA.w_prev + ' → ' + DATA.w_cur + ')';
+    chgGrid.appendChild(card);
+  });
+
+  // ================= TIME SERIES CHARTS =================
+  var NS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs){
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  function buildTimeSeries(svgId, opts){
+    // opts: values[], labels[], yMin, yMax, yTicks[{v,label}], color, colorVar, fmt(v), refLine{v,label}, unitFmt
+    var svg = document.getElementById(svgId);
+    var W = 640, H = 260, ML = 48, MR = 16, MT = 18, MB = 30;
+    var PW = W - ML - MR, PH = H - MT - MB;
+    var n = opts.values.length;
+    function xAt(i){ return ML + i*(PW/(n-1)); }
+    function yAt(v){ return MT + PH*(1 - (v - opts.yMin)/(opts.yMax - opts.yMin)); }
+
+    // gridlines + y ticks
+    opts.yTicks.forEach(function(t){
+      var y = yAt(t.v);
+      svg.appendChild(el('line', {x1:ML, x2:ML+PW, y1:y, y2:y, class:'grid-line'}));
+      var lbl = el('text', {x:ML-8, y:y+3, class:'axis-label', 'text-anchor':'end'});
+      lbl.textContent = t.label;
+      svg.appendChild(lbl);
+    });
+
+    // reference line (optional)
+    if (opts.refLine){
+      var ry = yAt(opts.refLine.v);
+      svg.appendChild(el('line', {x1:ML, x2:ML+PW, y1:ry, y2:ry, stroke:'var(--ink-3)', 'stroke-width':1, 'stroke-dasharray':'3,4'}));
+      var rl = el('text', {x:ML+PW, y:ry-6, class:'ref-label', 'text-anchor':'end'});
+      rl.textContent = opts.refLine.label;
+      svg.appendChild(rl);
+    }
+
+    // x labels (every 2nd week to avoid crowding)
+    opts.labels.forEach(function(lab, i){
+      if (i % 2 !== 0 && i !== n-1) return;
+      var lx = el('text', {x:xAt(i), y:H-8, class:'axis-label', 'text-anchor':'middle'});
+      lx.textContent = lab;
+      svg.appendChild(lx);
+    });
+
+    // area + line
+    var pts = opts.values.map(function(v,i){ return [xAt(i), yAt(v)]; });
+    var linePath = pts.map(function(p,i){ return (i===0?'M':'L')+p[0].toFixed(1)+','+p[1].toFixed(1); }).join(' ');
+    if (opts.area){
+      var areaPath = linePath + ' L' + pts[n-1][0].toFixed(1) + ',' + (MT+PH) + ' L' + pts[0][0].toFixed(1) + ',' + (MT+PH) + ' Z';
+      svg.appendChild(el('path', {d:areaPath, fill:opts.colorVar, opacity:'0.10', stroke:'none'}));
+    }
+    var pathEl = el('path', {d:linePath, fill:'none', stroke:opts.colorVar, 'stroke-width':2, 'stroke-linejoin':'round', 'stroke-linecap':'round'});
+    svg.appendChild(pathEl);
+
+    // end dot + label
+    var lastPt = pts[n-1];
+    svg.appendChild(el('circle', {cx:lastPt[0], cy:lastPt[1], r:4, fill:opts.colorVar, stroke:'var(--surface)', 'stroke-width':2}));
+    var endLbl = el('text', {x:lastPt[0], y:lastPt[1]-12, class:'end-label', 'text-anchor':'end', fill:opts.colorVar});
+    endLbl.textContent = opts.fmt(opts.values[n-1]);
+    svg.appendChild(endLbl);
+
+    // crosshair group
+    var chLine = el('line', {x1:0, x2:0, y1:MT, y2:MT+PH, stroke:'var(--ink-3)', 'stroke-width':1, opacity:0});
+    var chDot = el('circle', {r:5, fill:opts.colorVar, stroke:'var(--surface)', 'stroke-width':2, opacity:0});
+    svg.appendChild(chLine); svg.appendChild(chDot);
+
+    var hit = el('rect', {x:ML, y:MT, width:PW, height:PH, class:'hit'});
+    svg.appendChild(hit);
+
+    function moveTo(i, clientX, clientY){
+      var p = pts[i];
+      chLine.setAttribute('x1', p[0]); chLine.setAttribute('x2', p[0]); chLine.setAttribute('opacity', 1);
+      chDot.setAttribute('cx', p[0]); chDot.setAttribute('cy', p[1]); chDot.setAttribute('opacity', 1);
+      showTip(clientX, clientY, '<div class="tt-title">' + opts.labels[i] + '주</div><div class="tt-row"><span>' + opts.seriesName + '</span><b>' + opts.fmt(opts.values[i]) + '</b></div>');
+    }
+    hit.addEventListener('pointermove', function(ev){
+      var rect = svg.getBoundingClientRect();
+      var scale = rect.width / W;
+      var localX = (ev.clientX - rect.left) / scale;
+      var i = Math.round((localX - ML) / (PW/(n-1)));
+      i = Math.max(0, Math.min(n-1, i));
+      moveTo(i, ev.clientX, ev.clientY);
+    });
+    hit.addEventListener('pointerleave', function(){
+      chLine.setAttribute('opacity', 0); chDot.setAttribute('opacity', 0); hideTip();
+    });
+    hit.addEventListener('focus', function(){
+      var rect = svg.getBoundingClientRect();
+      var scale = rect.width / W;
+      var p = pts[n-1];
+      moveTo(n-1, rect.left + p[0]*scale, rect.top + p[1]*scale);
+    });
+    hit.addEventListener('blur', function(){
+      chLine.setAttribute('opacity', 0); chDot.setAttribute('opacity', 0); hideTip();
+    });
+    hit.setAttribute('tabindex', '0');
+  }
+
+  buildTimeSeries('chart-rate', {
+    values: nat.map(function(d){return d.avg_rate;}),
+    labels: DATA.weeks,
+    yMin: 0, yMax: 1,
+    yTicks: [0,0.25,0.5,0.75,1].map(function(v){ return {v:v, label:(v*100)+'%'}; }),
+    colorVar: 'var(--accent-rate)',
+    fmt: pct,
+    area: true,
+    seriesName: '가동률'
+  });
+
+  var maxCapaDomain = Math.max(DATA.total_capa_latest, Math.max.apply(null, nat.map(function(d){return d.total_capa;}))) * 1.04;
+  buildTimeSeries('chart-capa', {
+    values: nat.map(function(d){return d.online_capa;}),
+    labels: DATA.weeks,
+    yMin: 0, yMax: maxCapaDomain,
+    yTicks: [0, maxCapaDomain*0.25, maxCapaDomain*0.5, maxCapaDomain*0.75, maxCapaDomain].map(function(v){ return {v:v, label:Math.round(v/10000).toLocaleString('ko-KR')}; }),
+    colorVar: 'var(--accent-capa)',
+    fmt: mt,
+    area: true,
+    seriesName: '가동 캐파',
+    refLine: {v: DATA.total_capa_latest, label: '총 캐파 ' + mt(DATA.total_capa_latest)}
+  });
+
+  // ================= REGION BARS =================
+  var regionList = document.getElementById('region-list');
+  var maxRate = Math.max.apply(null, DATA.regions.map(function(r){return r.rate;}));
+  DATA.regions.forEach(function(r){
+    var row = document.createElement('div');
+    row.className = 'region-row';
+    var nameBox = document.createElement('div');
+    var nameEl = document.createElement('span'); nameEl.className='region-name'; nameEl.textContent = r.region;
+    var subEl = document.createElement('span'); subEl.className='region-sub'; subEl.textContent = r.count + '개 · ' + mt(r.capa);
+    nameBox.appendChild(nameEl); nameBox.appendChild(subEl);
+
+    var track = document.createElement('div'); track.className='region-bar-track';
+    var fill = document.createElement('div'); fill.className='region-bar-fill';
+    fill.style.width = Math.max(2, (r.rate/1)*100) + '%';
+    fill.tabIndex = 0;
+    fill.setAttribute('role','img');
+    fill.setAttribute('aria-label', r.region + ' 가동률 ' + pct(r.rate));
+    track.appendChild(fill);
+
+    var pctEl = document.createElement('div'); pctEl.className='region-pct tab'; pctEl.textContent = pct(r.rate);
+
+    row.appendChild(nameBox); row.appendChild(track); row.appendChild(pctEl);
+    regionList.appendChild(row);
+
+    function tipHandler(ev){
+      var rect = fill.getBoundingClientRect();
+      showTip(rect.left + rect.width/2, rect.top, '<div class="tt-title">'+r.region+'</div><div class="tt-row"><span>가동률</span><b>'+pct(r.rate)+'</b></div><div class="tt-row"><span>캐파</span><b>'+mt(r.capa)+'</b></div><div class="tt-row"><span>설비수</span><b>'+r.count+'개</b></div>');
+    }
+    fill.addEventListener('pointerenter', tipHandler);
+    fill.addEventListener('focus', tipHandler);
+    fill.addEventListener('pointerleave', hideTip);
+    fill.addEventListener('blur', hideTip);
+  });
+
+  // ================= STATUS MIX =================
+  var statusDefs = [
+    {key:'good', label:'정상 가동 (정상/증산)', color:'var(--good)'},
+    {key:'warning', label:'저부하 · 감산', color:'var(--warning)'},
+    {key:'serious', label:'정기보수', color:'var(--serious)'},
+    {key:'critical', label:'가동 중단', color:'var(--critical)'}
+  ];
+  var totalStatusCapa = Object.keys(DATA.status_mix).reduce(function(s,k){ return s + DATA.status_mix[k]; }, 0);
+  document.getElementById('status-sub').textContent = '총 ' + mt(totalStatusCapa) + ' 기준';
+
+  var statusbar = document.getElementById('statusbar');
+  var legend = document.getElementById('status-legend');
+  statusDefs.forEach(function(sd){
+    var val = DATA.status_mix[sd.key] || 0;
+    var share = val / totalStatusCapa;
+    var seg = document.createElement('div');
+    seg.className = 'seg';
+    seg.style.width = (share*100) + '%';
+    seg.style.background = sd.color;
+    seg.tabIndex = 0;
+    seg.setAttribute('role','img');
+    seg.setAttribute('aria-label', sd.label + ' ' + mt(val) + ' (' + pct(share) + ')');
+    statusbar.appendChild(seg);
+
+    function tipHandler(){
+      var rect = seg.getBoundingClientRect();
+      showTip(rect.left + rect.width/2, rect.top, '<div class="tt-title">'+sd.label+'</div><div class="tt-row"><span>캐파</span><b>'+mt(val)+'</b></div><div class="tt-row"><span>비중</span><b>'+pct(share)+'</b></div>');
+    }
+    seg.addEventListener('pointerenter', tipHandler);
+    seg.addEventListener('focus', tipHandler);
+    seg.addEventListener('pointerleave', hideTip);
+    seg.addEventListener('blur', hideTip);
+
+    var item = document.createElement('div'); item.className='status-item';
+    var dot = document.createElement('span'); dot.className='status-dot'; dot.style.background = sd.color;
+    var txt = document.createElement('div'); txt.className='txt';
+    var nameEl = document.createElement('span'); nameEl.className='name'; nameEl.textContent = sd.label;
+    var valEl = document.createElement('span'); valEl.className='val tab'; valEl.textContent = mt(val) + ' · ' + pct(share);
+    txt.appendChild(nameEl); txt.appendChild(valEl);
+    item.appendChild(dot); item.appendChild(txt);
+    legend.appendChild(item);
+  });
+
+  // ================= FOOTNOTE =================
+  var fn = document.getElementById('footnote');
+  fn.innerHTML =
+    '<b>데이터 안내</b> — 내부 DB 트래커(주간 갱신) 기준, ICIS China SM 주간 리포트(가동률 산정: 전주 토요일~금주 금요일 7일 평균)와 연동. 설비 위치·업체명은 원문 중국어를 영문으로 치환.' +
+    '<ul>' +
+    '<li>08/07주부터 총 설비 캐파가 2,250.9만톤 → 2,248.9만톤으로 -2.0만톤 축소 반영됨 (구간 내 원인 미확인 · ※ 원문 확인 필요).</li>' +
+    '<li>가동률 0%는 정기보수·가동중단 등으로 생산이 없는 상태를 의미하며 추정치가 아님.</li>' +
+    '<li>동일 한자 사명이지만 캐파가 다른 2개 라인(Jilin Petrochemical)은 라인 A/B로 구분 표기.</li>' +
+    '</ul>' +
+    (DATA.generated_at ? '<div style="margin-top:8px">구글시트 실시간 연동 · 마지막 갱신 ' + new Date(DATA.generated_at).toLocaleString('ko-KR') + '</div>' : '<div style="margin-top:8px">⚠ 내장 스냅샷 데이터로 표시 중 (구글시트 미연동) — DATA_URL 설정 시 실시간 데이터로 전환됩니다.</div>');
+
+  } // ---- end renderDashboard ----
+
+  // ===== 실행: DATA_URL이 설정돼 있으면 구글시트(GAS)에서 fetch, 아니면 내장 스냅샷 사용 =====
+  if (DATA_URL) {
+    fetch(DATA_URL)
+      .then(function(r){ return r.json(); })
+      .then(function(json){ renderDashboard(json); })
+      .catch(function(err){
+        console.error('데이터 연동 실패, 내장 스냅샷으로 대체합니다:', err);
+        renderDashboard(EMBEDDED_DATA);
+      });
+  } else {
+    renderDashboard(EMBEDDED_DATA);
+  }
+
+})();
+</script>
