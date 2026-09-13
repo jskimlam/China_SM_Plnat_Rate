@@ -292,6 +292,82 @@
   #tip .tt-title{ font-weight:700; margin-bottom:2px; }
   #tip .tt-row{ display:flex; justify-content:space-between; gap:10px; }
 
+  /* ============ WEEKLY UPDATE PANEL ============ */
+  .upload-card{ border-style:dashed; }
+  .upload-help{
+    font-size:12.5px;
+    color:var(--ink-2);
+    line-height:1.65;
+    margin:0 0 14px;
+  }
+  .upload-help code{
+    font: 11.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color:var(--ink-3);
+    background:var(--surface-2);
+    padding:2px 5px;
+    border-radius:5px;
+  }
+  .upload-row{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-end;
+    gap:14px;
+    margin-bottom:12px;
+  }
+  .upload-field{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    font-size:12px;
+    color:var(--ink-3);
+  }
+  .upload-field input{
+    font:14px/1.4 'Noto Sans KR', sans-serif;
+    width:200px;
+    padding:9px 11px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:var(--surface-2);
+    color:var(--ink-1);
+  }
+  .upload-field input:focus-visible{ outline:2px solid var(--accent-rate); outline-offset:1px; }
+  .upload-textarea{
+    width:100%;
+    font:12.5px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    padding:11px 12px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:var(--surface-2);
+    color:var(--ink-1);
+    resize:vertical;
+    min-height:104px;
+  }
+  .upload-textarea:focus-visible{ outline:2px solid var(--accent-rate); outline-offset:1px; }
+  .upload-actions{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-top:12px;
+    flex-wrap:wrap;
+  }
+  .upload-btn{
+    font:13.5px/1 'Noto Sans KR', sans-serif;
+    font-weight:700;
+    padding:10px 20px;
+    border:none;
+    border-radius:9px;
+    background:var(--accent-rate);
+    color:#fff;
+    cursor:pointer;
+  }
+  .upload-btn:hover:not(:disabled){ filter:brightness(1.08); }
+  .upload-btn:disabled{ opacity:0.5; cursor:not-allowed; }
+  .upload-btn:focus-visible{ outline:2px solid var(--ink-1); outline-offset:2px; }
+  .upload-status{ font-size:12.5px; font-weight:600; line-height:1.5; }
+  .upload-status.ok{ color:var(--good); }
+  .upload-status.err{ color:var(--down); }
+  .upload-status.busy{ color:var(--ink-3); }
+
   /* ============ FOOTER ============ */
   .footnote{
     font-size:12px;
@@ -317,43 +393,7 @@
   }
 
   :focus-visible{ outline:2px solid var(--accent-rate); outline-offset:2px; }
-
-  /* ============ ACCESS GATE ============ */
-  body:not(.unlocked) .wrap{ display:none; }
-  #gate{
-    position:fixed; inset:0; z-index:100;
-    display:flex; align-items:center; justify-content:center;
-    background:var(--page);
-    padding:20px;
-  }
-  body.unlocked #gate{ display:none; }
-  .gate-box{
-    background:var(--surface); border:1px solid var(--border); border-radius:16px;
-    box-shadow:var(--shadow); padding:28px 26px; width:100%; max-width:320px;
-    display:flex; flex-direction:column; gap:12px;
-  }
-  .gate-box h2{ margin:0; font-size:16px; }
-  .gate-box p{ margin:0; font-size:12.5px; color:var(--ink-3); line-height:1.5; }
-  .gate-box input{
-    font: inherit; font-size:14px; padding:10px 12px; border-radius:8px;
-    border:1px solid var(--border); background:var(--page); color:var(--ink-1);
-  }
-  .gate-box button{
-    font: inherit; font-weight:700; font-size:13.5px; padding:10px 12px; border-radius:8px;
-    border:none; background:var(--accent-rate); color:#fff; cursor:pointer;
-  }
-  .gate-box .err{ font-size:12px; color:var(--down); min-height:16px; }
 </style>
-
-<div id="gate">
-  <form class="gate-box" id="gate-form" autocomplete="off">
-    <h2 class="disp">🔒 내부 자료 접근</h2>
-    <p>첨단구매1팀 내부용 가동률 트래커입니다. 접근 비밀번호를 입력하세요.</p>
-    <input type="password" id="gate-pw" placeholder="비밀번호" autofocus>
-    <button type="submit">입장</button>
-    <div class="err" id="gate-err"></div>
-  </form>
-</div>
 
 <div class="wrap">
 
@@ -414,6 +454,29 @@
 
   <footer class="footnote" id="footnote"></footer>
 
+  <!-- WEEKLY UPDATE PANEL -->
+  <section class="card upload-card" aria-label="새 주차 데이터 추가">
+    <div class="section-head">
+      <h2 class="disp">새 주차 데이터 추가</h2>
+      <span class="sub">관리자용 · 구글시트에 행 추가</span>
+    </div>
+    <p class="upload-help">
+      한 줄 = 설비 1개. 아래 9개 값을 <b>쉼표</b> 또는 <b>탭</b>으로 구분해 그대로 붙여넣으세요:<br>
+      <code>주차(YYYY-MM-DD), 지역(CN), Region(EN), 업체(CN), Company(EN), Capa(톤/년), 가동률(0~1), 상태(CN), 상태(KR)</code>
+    </p>
+    <div class="upload-row">
+      <label class="upload-field">
+        <span>WRITE_SECRET 비밀번호</span>
+        <input type="password" id="up-secret" autocomplete="off" placeholder="비밀번호 입력">
+      </label>
+    </div>
+    <textarea id="up-rows" class="upload-textarea" rows="5" placeholder="2026-09-18, 吉林, Jilin, 吉林石化, Jilin Petrochemical (PetroChina), 460000, 0.7, 生产正常, 생산 정상"></textarea>
+    <div class="upload-actions">
+      <button id="up-submit" class="upload-btn" type="button">구글시트에 추가</button>
+      <span id="up-status" class="upload-status" role="status" aria-live="polite"></span>
+    </div>
+  </section>
+
 </div>
 
 <div id="tip" role="status" aria-live="polite"></div>
@@ -426,35 +489,13 @@
 (function(){
   "use strict";
 
-  // ===== 접근 비밀번호 설정 =====
-  // 완전한 보안이 아니라 casual한 접근 제한용(간단 평문 비교). 원하는 값으로 바꿔서 사용.
-  var SITE_PASSWORD = 'sm2026';
-  var GATE_KEY = 'sm-china-dash-unlocked';
-  (function initGate(){
-    if (sessionStorage.getItem(GATE_KEY) === '1') {
-      document.body.classList.add('unlocked');
-      return;
-    }
-    var form = document.getElementById('gate-form');
-    var pwInput = document.getElementById('gate-pw');
-    var errEl = document.getElementById('gate-err');
-    form.addEventListener('submit', function(ev){
-      ev.preventDefault();
-      if (pwInput.value === SITE_PASSWORD) {
-        sessionStorage.setItem(GATE_KEY, '1');
-        document.body.classList.add('unlocked');
-      } else {
-        errEl.textContent = '비밀번호가 올바르지 않습니다.';
-        pwInput.value = '';
-        pwInput.focus();
-      }
-    });
-  })();
+  // 보기(GET)는 누구나 열람 가능 — 접근 게이트 없음.
+  // 데이터를 바꾸는 쪽(주간 자동 업데이트 doPost)만 Code.gs의 WRITE_SECRET으로 보호됨.
 
   // ===== 데이터 소스 설정 =====
   // Apps Script 웹앱 배포 후 나오는 URL을 여기에 붙여넣으면 구글시트에서 실시간으로 데이터를 읽어옴.
   // 비워두면(기본값) 이 파일에 내장된 스냅샷 데이터로 동작 — 오프라인/데모용, 매주 갱신되지 않음.
-  var DATA_URL = 'https://script.google.com/macros/s/AKfycbw4RfrjA2Z8CKqSCXuc1t4uZo8IiNbqPNyZKazlgN9f-s5SVAlMtWONBtkQF8HD8e9U/exec';
+  var DATA_URL = 'https://script.google.com/macros/s/AKfycbwgn9wMf-aMhkL_9ONO7AFPpOhDqj2ZMHzDHPgpYnzTqcqlTYToxxDCKL1R-tlMdVgU/exec';
   var EMBEDDED_DATA = JSON.parse(document.getElementById('dashboard-data').textContent);
 
   var tip = document.getElementById('tip');
@@ -859,6 +900,99 @@
   } else {
     renderDashboard(EMBEDDED_DATA);
   }
+
+  // ================= WEEKLY UPDATE PANEL =================
+  // 대시보드 보기는 누구나 가능하지만, 이 패널로 구글시트에 행을 추가하려면
+  // Apps Script "스크립트 속성"에 설정한 WRITE_SECRET 비밀번호가 필요함 (Code.gs doPost에서 검증).
+  (function(){
+    var secretEl = document.getElementById('up-secret');
+    var rowsEl = document.getElementById('up-rows');
+    var btnEl = document.getElementById('up-submit');
+    var statusEl = document.getElementById('up-status');
+    if (!btnEl) return;
+
+    if (!DATA_URL) {
+      btnEl.disabled = true;
+      statusEl.className = 'upload-status err';
+      statusEl.textContent = 'DATA_URL이 설정되지 않아 업로드를 사용할 수 없습니다 (내장 스냅샷 모드).';
+      return;
+    }
+
+    // 붙여넣은 텍스트 → 9개 컬럼 행 배열로 변환. 줄에 탭이 있으면 탭 기준, 없으면 쉼표 기준으로 나눔.
+    function parseRows(text){
+      var lines = text.split(/\r?\n/).map(function(l){ return l.trim(); }).filter(function(l){ return l.length > 0; });
+      if (lines.length === 0) throw new Error('추가할 행이 없습니다. 텍스트를 붙여넣으세요.');
+      var rows = [];
+      for (var i = 0; i < lines.length; i++){
+        var line = lines[i];
+        var cells = line.indexOf('\t') !== -1 ? line.split('\t') : line.split(',');
+        cells = cells.map(function(c){ return c.trim().replace(/^"(.*)"$/, '$1'); });
+        if (cells.length !== 9){
+          throw new Error((i+1) + '번째 줄의 값이 9개가 아닙니다 (현재 ' + cells.length + '개).');
+        }
+        var capa = Number(String(cells[5]).replace(/,/g, ''));
+        if (isNaN(capa)){
+          throw new Error((i+1) + '번째 줄의 Capa 값이 숫자가 아닙니다: "' + cells[5] + '"');
+        }
+        var rateRaw = String(cells[6]).replace(/,/g, '').trim();
+        var rate = rateRaw === '' ? null : Number(rateRaw);
+        if (rateRaw !== '' && isNaN(rate)){
+          throw new Error((i+1) + '번째 줄의 가동률 값이 숫자가 아닙니다: "' + cells[6] + '"');
+        }
+        rows.push([cells[0], cells[1], cells[2], cells[3], cells[4], capa, rate, cells[7], cells[8]]);
+      }
+      return rows;
+    }
+
+    btnEl.addEventListener('click', function(){
+      var secret = secretEl.value;
+      if (!secret){
+        statusEl.className = 'upload-status err';
+        statusEl.textContent = '비밀번호를 입력하세요.';
+        return;
+      }
+      var rows;
+      try {
+        rows = parseRows(rowsEl.value);
+      } catch (err) {
+        statusEl.className = 'upload-status err';
+        statusEl.textContent = err.message;
+        return;
+      }
+
+      btnEl.disabled = true;
+      statusEl.className = 'upload-status busy';
+      statusEl.textContent = '전송 중... (' + rows.length + '개 행)';
+
+      // Content-Type을 명시하지 않아야 브라우저가 CORS preflight(OPTIONS)를 보내지 않음 —
+      // Apps Script 웹앱은 OPTIONS 요청에 응답하지 못하므로, body는 반드시 별도 헤더 없는
+      // 일반 문자열(JSON.stringify 결과)로 보내야 함. GAS 쪽은 e.postData.contents를 그대로
+      // JSON.parse 하므로 동작에는 문제 없음.
+      fetch(DATA_URL, {
+        method: 'POST',
+        body: JSON.stringify({ secret: secret, rows: rows })
+      })
+        .then(function(r){ return r.json(); })
+        .then(function(json){
+          if (json && json.ok){
+            statusEl.className = 'upload-status ok';
+            statusEl.textContent = '저장 완료 — ' + json.appended + '개 행 추가됨. 잠시 후 새로고침됩니다.';
+            rowsEl.value = '';
+            secretEl.value = '';
+            setTimeout(function(){ location.reload(); }, 1400);
+          } else {
+            btnEl.disabled = false;
+            statusEl.className = 'upload-status err';
+            statusEl.textContent = (json && json.error) ? json.error : '알 수 없는 오류가 발생했습니다.';
+          }
+        })
+        .catch(function(err){
+          btnEl.disabled = false;
+          statusEl.className = 'upload-status err';
+          statusEl.textContent = '전송 실패 (네트워크/CORS 오류일 수 있음): ' + err.message;
+        });
+    });
+  })();
 
 })();
 </script>
