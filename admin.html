@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>China SM Plant Rate · Admin</title>
+<script>
+(function(){try{var s=localStorage.getItem('sm-dash-theme');var t=s||((matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light');document.documentElement.setAttribute('data-theme',t)}catch(e){}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+:root{color-scheme:light;--bg:#f4f7fb;--surface:#fff;--surface2:#f8fafc;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--brand:#2563eb;--green:#16a34a;--red:#dc2626;--orange:#d97706;--shadow:0 1px 2px rgba(15,23,42,.04),0 10px 30px rgba(15,23,42,.06)}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#08111f;--surface:#0f1b2d;--surface2:#132238;--text:#e8eef8;--muted:#9eb0c7;--line:#24364e;--brand:#5b8cff;--green:#4ade80;--red:#fb7185;--orange:#fbbf24;--shadow:0 1px 2px rgba(0,0,0,.22),0 12px 32px rgba(0,0,0,.24)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif}.disp{font-family:'IBM Plex Sans KR','Noto Sans KR',sans-serif}.top{border-bottom:1px solid var(--line);background:var(--surface);position:sticky;top:0;z-index:10}.topin{max-width:1180px;margin:auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{display:flex;align-items:center;gap:12px}.mark{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--brand),#06b6d4);display:grid;place-items:center;color:white;font-weight:800}.title{font-size:16px;font-weight:700}.sub{font-size:10px;color:var(--muted);margin-top:2px}.actions{display:flex;gap:8px}.btn,.back{height:36px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);color:var(--text);padding:0 12px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;cursor:pointer}.btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}.btn:disabled{opacity:.45;cursor:not-allowed}.wrap{max-width:1180px;margin:auto;padding:22px 20px 48px}.head{margin-bottom:18px}.head h1{font-size:24px;margin:0}.head p{font-size:11px;color:var(--muted);margin:5px 0 0}.grid{display:grid;gap:14px}.summary{grid-template-columns:repeat(4,1fr);margin-bottom:14px}.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}.kpi{padding:15px}.kpi span{font-size:10px;color:var(--muted);display:block}.kpi b{font-size:20px;display:block;margin-top:7px}.pad{padding:18px}.section-title{font-size:13px;font-weight:700;margin:0 0 4px}.section-sub{font-size:10px;color:var(--muted);margin-bottom:14px}.form-grid{display:grid;grid-template-columns:220px 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:10px;color:var(--muted);font-weight:600}.field input,.field textarea{width:100%;border:1px solid var(--line);background:var(--surface2);color:var(--text);border-radius:10px;padding:10px 11px;font:12px/1.55 'Noto Sans KR',sans-serif;outline:none}.field textarea{min-height:240px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.field input:focus,.field textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 12%,transparent)}.checks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.check{border:1px solid var(--line);border-radius:10px;background:var(--surface2);padding:10px;display:flex;align-items:center;gap:8px;font-size:10px}.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}.check.ok .dot{background:var(--green)}.check.bad .dot{background:var(--red)}.check.warn .dot{background:var(--orange)}.preview{margin-top:14px;border:1px solid var(--line);border-radius:12px;overflow:auto;max-height:340px}.preview table{width:100%;border-collapse:collapse;min-width:960px}.preview th,.preview td{font-size:9.5px;padding:8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}.preview th{position:sticky;top:0;background:var(--surface2);color:var(--muted)}.status{margin-top:12px;font-size:11px;font-weight:600;min-height:18px}.status.ok{color:var(--green)}.status.err{color:var(--red)}.status.busy{color:var(--muted)}.footer-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.notice{padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--brand) 7%,var(--surface2));border:1px solid color-mix(in srgb,var(--brand) 18%,var(--line));font-size:10px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+@media(max-width:820px){.summary{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr}.checks{grid-template-columns:1fr}.topin,.wrap{padding-left:14px;padding-right:14px}.sub{display:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="topin"><div class="brand"><div class="mark">SM</div><div><div class="title disp">China SM Plant Rate · Admin</div><div class="sub">Weekly DB maintenance console</div></div></div><div class="actions"><button id="theme" class="btn" type="button">◐</button><a class="back" href="index.html">← Dashboard</a></div></div></header>
+<main class="wrap">
+  <div class="head"><h1 class="disp">Weekly Data Update</h1><p>새 주차 68개 설비 데이터를 검증한 뒤 Google Sheet DB에 추가합니다.</p></div>
+  <div class="grid summary">
+    <div class="card kpi"><span>Latest week</span><b id="latest">-</b></div>
+    <div class="card kpi"><span>Expected next week</span><b id="next">-</b></div>
+    <div class="card kpi"><span>Facilities</span><b id="facilities">-</b></div>
+    <div class="card kpi"><span>Regions</span><b id="regions">-</b></div>
+  </div>
+  <section class="card pad">
+    <h2 class="section-title">Paste weekly dataset</h2>
+    <div class="section-sub">한 줄당 9개 컬럼: 주차, 지역(CN), Region(EN), 업체(CN), Company(EN), Capa, 가동률, 상태(CN), 상태(KR)</div>
+    <div class="notice">저장 전 로컬 검증을 수행합니다. <b>행 수·열 수·주차·Capa·가동률·중복 주차</b>를 확인한 뒤에만 저장 버튼이 활성화됩니다.</div>
+    <div class="form-grid">
+      <div class="field"><label>WRITE_SECRET</label><input id="secret" type="password" autocomplete="off" placeholder="비밀번호 입력"></div>
+      <div class="field"><label>Week date</label><input id="week" type="text" placeholder="YYYY-MM-DD" readonly></div>
+    </div>
+    <div class="field" style="margin-top:12px"><label>68개 설비 데이터</label><textarea id="rows" placeholder="2026-09-18, 吉林, Jilin, 吉林石化, Jilin Petrochemical (PetroChina), 460000, 0.7, 生产正常, 생산 정상"></textarea></div>
+    <div class="checks" id="checks"></div>
+    <div class="preview" id="preview" style="display:none"><table><thead><tr><th>#</th><th>Week</th><th>Region CN</th><th>Region EN</th><th>Company CN</th><th>Company EN</th><th>Capa</th><th>Rate</th><th>Status CN</th><th>Status KR</th></tr></thead><tbody id="preview-body"></tbody></table></div>
+    <div id="status" class="status"></div>
+    <div class="footer-actions"><button id="validate" class="btn" type="button">검증</button><button id="submit" class="btn primary" type="button" disabled>DB에 저장</button></div>
+  </section>
+</main>
+<script>
+(function(){
+'use strict';
+var DATA_URL='https://script.google.com/macros/s/AKfycbwgn9wMf-aMhkL_9ONO7AFPpOhDqj2ZMHzDHPgpYnzTqcqlTYToxxDCKL1R-tlMdVgU/exec';
+var CURRENT=null,PARSED=[];
+function qs(s){return document.querySelector(s)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function setStatus(msg,cls){var e=qs('#status');e.textContent=msg;e.className='status '+(cls||'')}
+function isoNext(w,generated){var year=(generated?new Date(generated).getFullYear():new Date().getFullYear()),m=String(w||'').match(/(\d{2})\/(\d{2})/);if(!m)return '';var d=new Date(year,Number(m[1])-1,Number(m[2]));if(generated){var g=new Date(generated);if(d.getTime()>g.getTime()+120*86400000)d.setFullYear(year-1)}d.setDate(d.getDate()+7);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function parseRows(text){var lines=text.split(/\r?\n/).map(function(x){return x.trim()}).filter(Boolean),rows=[];for(var i=0;i<lines.length;i++){var cells=lines[i].indexOf('\t')>=0?lines[i].split('\t'):lines[i].split(',');cells=cells.map(function(c){return c.trim().replace(/^"(.*)"$/,'$1')});rows.push(cells)}return rows}
+function checkEl(label,state,msg){return '<div class="check '+state+'"><span class="dot"></span><span><b>'+label+'</b><br>'+msg+'</span></div>'}
+function validate(){
+  var rows=parseRows(qs('#rows').value),expected=qs('#week').value,checks=[],ok=true;PARSED=[];
+  var rowCountOk=rows.length===68;checks.push(checkEl('설비 수',rowCountOk?'ok':'bad',rows.length+' / 68개'));ok=ok&&rowCountOk;
+  var colBad=rows.findIndex(function(r){return r.length!==9});var colsOk=colBad<0;checks.push(checkEl('9개 컬럼',colsOk?'ok':'bad',colsOk?'전체 정상':(colBad+1)+'번째 줄 오류'));ok=ok&&colsOk;
+  var weeks={};rows.forEach(function(r){if(r[0])weeks[r[0]]=1});var weekKeys=Object.keys(weeks),weekOk=weekKeys.length===1&&weekKeys[0]===expected;checks.push(checkEl('주차',weekOk?'ok':'bad',weekKeys.length?weekKeys.join(', '):'없음'));ok=ok&&weekOk;
+  var capaBad=-1,rateBad=-1;
+  rows.forEach(function(r,i){if(r.length!==9)return;var c=Number(String(r[5]).replace(/,/g,'')),raw=String(r[6]).trim(),rt=raw===''?null:Number(raw);if(capaBad<0&&(!isFinite(c)||c<=0))capaBad=i;if(rateBad<0&&raw!==''&&(!isFinite(rt)||rt<0||rt>1))rateBad=i;if(isFinite(c)&&c>0&&(raw===''||(isFinite(rt)&&rt>=0&&rt<=1)))PARSED.push([r[0],r[1],r[2],r[3],r[4],c,rt,r[7],r[8]])});
+  var capaOk=capaBad<0;checks.push(checkEl('Capa',capaOk?'ok':'bad',capaOk?'숫자 형식 정상':(capaBad+1)+'번째 줄 확인'));ok=ok&&capaOk;var rateOk=rateBad<0;checks.push(checkEl('가동률',rateOk?'ok':'bad',rateOk?'0~1 범위 정상':(rateBad+1)+'번째 줄 확인'));ok=ok&&rateOk;
+  var duplicate=CURRENT&&CURRENT.w_cur&&expected.endsWith(String(CURRENT.w_cur).replace('/','-'));checks.push(checkEl('중복 주차',duplicate?'bad':'ok',duplicate?'최신주와 중복 가능성':'신규 주차'));ok=ok&&!duplicate;
+  qs('#checks').innerHTML=checks.join('');
+  if(rows.length&&colsOk){qs('#preview').style.display='block';qs('#preview-body').innerHTML=rows.slice(0,68).map(function(r,i){return '<tr><td>'+(i+1)+'</td>'+r.map(function(c){return '<td>'+esc(c)+'</td>'}).join('')+'</tr>'}).join('')}else{qs('#preview').style.display='none'}
+  qs('#submit').disabled=!ok||!qs('#secret').value;setStatus(ok?'검증 완료 — 저장할 수 있습니다.':'검증 항목을 확인해 주세요.',ok?'ok':'err');return ok;
+}
+qs('#validate').addEventListener('click',validate);qs('#secret').addEventListener('input',function(){if(PARSED.length)qs('#submit').disabled=!qs('#secret').value});
+qs('#theme').addEventListener('click',function(){var t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',t);try{localStorage.setItem('sm-dash-theme',t)}catch(e){}});
+qs('#submit').addEventListener('click',function(){if(!validate())return;var secret=qs('#secret').value;if(!secret){setStatus('비밀번호를 입력하세요.','err');return}qs('#submit').disabled=true;setStatus('Google Sheet DB에 저장 중...','busy');fetch(DATA_URL,{method:'POST',body:JSON.stringify({secret:secret,rows:PARSED})}).then(function(r){return r.json()}).then(function(j){if(!j.ok)throw new Error(j.error||'저장 실패');setStatus('저장 완료 — '+j.appended+'개 행이 추가되었습니다.','ok');qs('#rows').value='';qs('#secret').value='';setTimeout(function(){location.href='index.html'},900)}).catch(function(e){qs('#submit').disabled=false;setStatus(e.message,'err')})});
+function load(){fetch(DATA_URL+'?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(d){if(d.error)throw new Error(d.error);CURRENT=d;qs('#latest').textContent=d.w_cur||'-';var next=isoNext(d.w_cur,d.generated_at);qs('#next').textContent=next||'-';qs('#week').value=next;qs('#facilities').textContent=(d.facility_count||'-')+'개';qs('#regions').textContent=(d.regions?d.regions.length:'-')+'개';qs('#checks').innerHTML=checkEl('준비 상태','warn','데이터를 붙여넣고 검증을 실행하세요.');setStatus('DB 연결 완료.','ok')}).catch(function(e){setStatus('DB 조회 실패: '+e.message,'err')})}
+load();
+})();
+</script>
+</body>
+</html>
