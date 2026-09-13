@@ -1,1 +1,3 @@
-# China_SM_Plnat_Rate
+# China SM Plant Rate
+
+Dashboard + Android APK build.
