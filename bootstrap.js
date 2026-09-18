@@ -71,8 +71,26 @@
         return snapshotResponse('non-JSON response');
       }
 
-      try{ JSON.parse(trimmed); }
+      var liveData;
+      try{ liveData=JSON.parse(trimmed); }
       catch(e){ return snapshotResponse('invalid JSON response'); }
+
+      try{
+        var snapRes=await nativeFetch('snapshot.json?_='+Date.now(),{cache:'no-store'});
+        if(snapRes.ok){
+          var snapText=await snapRes.clone().text();
+          var snapData=JSON.parse(snapText);
+          var liveCount=liveData&&liveData.national?liveData.national.length:0;
+          var snapCount=snapData&&snapData.national?snapData.national.length:0;
+          if(snapCount>liveCount){
+            window.__SM_GAS_FALLBACK__=true;
+            window.__SM_DATA_SOURCE__='snapshot';
+            window.__SM_DATA_SOURCE_NOTE__='snapshot is newer than live DB';
+            markSnapshotUi();
+            return snapRes;
+          }
+        }
+      }catch(e){}
 
       setLiveUi();
       return res;
