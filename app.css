@@ -17,3 +17,48 @@
 .trend-head{align-items:center}.chart-note{display:inline-flex;margin:-3px 0 8px;padding:5px 9px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);color:var(--muted);font-size:clamp(10px,.7vw,12px);font-weight:700}.region-kpi-name{font-size:clamp(19px,1.35vw,25px)!important}.change-pp{font-size:.58em;margin-left:4px}.tools{align-items:center}.segment{flex-wrap:wrap}.card{transition:border-color .18s ease,box-shadow .18s ease}.card:hover{border-color:color-mix(in srgb,var(--brand) 22%,var(--line))}
 @media(min-width:1500px){.kpi{min-height:138px}.status-ring{width:210px;height:210px}.status-ring:after{width:144px;height:144px}}
 @media(max-width:720px){.trend-head{align-items:flex-start}.page-head h1{font-size:clamp(24px,7vw,29px)}.kpi-value{font-size:clamp(24px,7vw,30px)}}
+
+/* ===== 2026-10-03 Weekly plant comparison ===== */
+#regions-quick .region-val{min-width:112px;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:1px}
+#regions-quick .region-val b{font-size:12px;color:var(--text)}
+#regions-quick .region-val small{font-size:10px;font-weight:800}
+#changes-quick .change-value{min-width:92px;text-align:right}
+.weekly-detail-card{margin-top:14px}
+.weekly-detail-head{align-items:flex-start;gap:14px;flex-wrap:wrap}
+.weekly-controls{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;max-width:100%}
+.weekly-search{min-width:190px}
+.weekly-table-wrap{overflow:auto;max-height:680px;border:1px solid var(--line);border-radius:14px}
+.weekly-table{width:100%;border-collapse:separate;border-spacing:0;min-width:1220px;font-size:12px}
+.weekly-table th{position:sticky;top:0;z-index:2;background:var(--surface-2);color:var(--muted);font-size:11px;font-weight:800;letter-spacing:.01em;text-align:right;padding:11px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.weekly-table th:first-child,.weekly-table th:nth-child(2),.weekly-table th:last-child{text-align:left}
+.weekly-table td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:right;vertical-align:middle;white-space:nowrap}
+.weekly-table td:first-child,.weekly-table td:nth-child(2),.weekly-table td:last-child{text-align:left}
+.weekly-table tr:last-child td{border-bottom:0}
+.weekly-table tr:hover td{background:rgba(79,151,255,.055)}
+.weekly-company{min-width:205px}
+.weekly-company b{display:block;color:var(--text);font-size:12.5px}
+.weekly-company small{display:block;color:var(--muted);font-size:10.5px;margin-top:2px}
+.weekly-region{font-weight:800;color:var(--text)}
+.weekly-delta{font-weight:900}
+.weekly-delta.up{color:var(--up)}
+.weekly-delta.down{color:var(--down)}
+.weekly-delta.flat{color:var(--muted)}
+.weekly-factor{white-space:normal!important;min-width:250px;max-width:330px;line-height:1.45;color:var(--text2)}
+.weekly-factor .from{color:var(--muted)}
+.weekly-factor .arrow{color:var(--muted);padding:0 4px}
+.table-foot{font-size:10.5px;color:var(--muted);margin-top:9px}
+@media(max-width:760px){
+  .weekly-controls{justify-content:flex-start}
+  .weekly-controls .segment{width:100%;overflow:auto;justify-content:flex-start}
+  .weekly-search,.weekly-controls .select{min-width:0;flex:1 1 150px}
+  .weekly-table-wrap{border:0;max-height:none;overflow:visible}
+  .weekly-table{display:block;min-width:0}
+  .weekly-table thead{display:none}
+  .weekly-table tbody{display:grid;gap:10px}
+  .weekly-table tr{display:grid;grid-template-columns:1fr 1fr;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:11px;box-shadow:var(--shadow)}
+  .weekly-table td{display:flex;justify-content:space-between;gap:12px;padding:6px 3px;border:0;text-align:right!important;white-space:normal;min-width:0}
+  .weekly-table td::before{content:attr(data-label);color:var(--muted);font-size:10px;font-weight:700;flex:0 0 auto}
+  .weekly-table td.weekly-company,.weekly-table td.weekly-factor{grid-column:1/-1;display:block;text-align:left!important;max-width:none}
+  .weekly-table td.weekly-company::before,.weekly-table td.weekly-factor::before{display:block;margin-bottom:4px}
+  .weekly-company b{font-size:13px}
+}
