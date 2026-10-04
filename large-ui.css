@@ -291,3 +291,125 @@ body{overflow-x:hidden}
   .page-head p{display:none}
 }
 
+
+
+/* ===== 2026-10-04 Fold cover final compact pass ===== */
+/* Fold8 cover / Galaxy S portrait: prioritize density, stable header and no horizontal overflow. */
+@media (max-width:600px){
+  html{font-size:12px}
+  body{overflow-x:hidden}
+  .appbar-inner{padding:7px 9px 0}
+  .shell{padding:9px 9px 26px}
+  .topline{gap:6px;align-items:center}
+  .brand{min-width:0;flex:1 1 auto;gap:7px;overflow:hidden}
+  .brand>div:last-child{min-width:0;overflow:hidden}
+  .brand-mark{width:32px;height:32px;flex:0 0 32px;border-radius:9px;font-size:10px}
+  .brand-title{font-size:0!important;line-height:1.1;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .brand-title:after{content:"China SM Intelligence"!important;font-size:13px!important;font-weight:700;letter-spacing:-.025em}
+  .brand-sub,.pill{display:none!important}
+  .actions{gap:4px;flex:0 0 auto}
+  .icon-btn,.admin-link{width:30px;height:30px;min-width:30px;padding:0;border-radius:8px;font-size:11px;justify-content:center}
+  .admin-link span{display:none!important}
+
+  .tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;margin-top:6px;overflow:visible}
+  .tab-btn{min-width:0;padding:8px 1px 9px;font-size:9.2px;line-height:1.1;letter-spacing:-.045em;text-align:center}
+  .tab-btn.active:after{left:5px;right:5px}
+
+  .page-head{margin-bottom:9px;gap:7px;align-items:flex-start}
+  .page-head h1{font-size:17px;line-height:1.15;letter-spacing:-.04em}
+  .page-head p{font-size:9.2px;line-height:1.35;margin-top:3px}
+  .meta{display:none}
+
+  .grid{gap:7px}
+  .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-bottom:7px}
+  .kpi{min-height:76px;padding:9px 10px}
+  .kpi-label{font-size:8.6px;line-height:1.25}
+  .kpi-value{font-size:18px;line-height:1.05;margin-top:5px;white-space:nowrap;letter-spacing:-.04em}
+  .kpi-foot{font-size:8.2px;line-height:1.25;gap:4px;flex-wrap:wrap}
+  .card{border-radius:11px}
+  .pad{padding:10px}
+  .card-head{gap:7px;margin-bottom:8px}
+  .card-title{font-size:13px;line-height:1.25}
+  .card-sub{font-size:9px;line-height:1.35;margin-top:3px}
+
+  .two,.two-equal,.three,.history-insight-grid{grid-template-columns:1fr}
+  .mini-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-top:6px}
+  .mini-stat{padding:6px 7px;border-radius:8px}
+  .mini-stat span{font-size:8px}
+  .mini-stat b{font-size:10.5px;margin-top:2px}
+
+  .chart-box{height:205px}
+  .chart-box.tall{height:250px}
+  .chart-box.trend-main{height:275px}
+  .status-ring{width:122px;height:122px;margin:2px auto 7px}
+  .status-center b{font-size:16px}
+  .status-center span{font-size:7.8px}
+  .status-list{gap:5px}
+  .status-row{font-size:8.6px;grid-template-columns:7px 1fr auto;gap:5px}
+
+  /* Region rows become two-line rows so prev/current values never spill off-screen. */
+  #regions-quick.region-list{gap:2px}
+  #regions-quick .region-row{
+    grid-template-columns:58px minmax(0,1fr);
+    grid-template-areas:"name value" "track track";
+    column-gap:8px;row-gap:5px;
+    padding:6px 0;
+    border-bottom:1px solid color-mix(in srgb,var(--line) 72%,transparent);
+  }
+  #regions-quick .region-row:last-child{border-bottom:0}
+  #regions-quick .region-name{grid-area:name;font-size:10.5px;font-weight:700;overflow:visible}
+  #regions-quick .track{grid-area:track;width:100%;height:6px}
+  #regions-quick .region-val{
+    grid-area:value;min-width:0;text-align:right;display:flex;align-items:baseline;justify-content:flex-end;
+    gap:6px;white-space:nowrap;font-size:9.2px;line-height:1.2
+  }
+  #regions-quick .region-val b{font-size:10.5px;font-weight:700}
+  #regions-quick .region-val small{display:inline;margin:0;font-size:9.2px;font-weight:700}
+
+  .region-list,.change-list{gap:6px}
+  .change-item,#changes-quick .change-item{
+    padding:8px 9px;min-height:0;gap:7px;border-radius:9px;
+    grid-template-columns:minmax(0,1fr) auto
+  }
+  .change-name,#changes-quick .change-name{font-size:10.2px;line-height:1.3}
+  .change-meta,.change-status,#changes-quick .change-meta,#changes-quick .change-status{font-size:8.3px;line-height:1.3;margin-top:2px}
+  .change-value,#changes-quick .change-value{font-size:9.2px;min-width:58px;text-align:right}
+
+  .segment{padding:1px;border-radius:8px}
+  .seg{font-size:8.8px;padding:5px 6px;border-radius:6px}
+  .select{height:29px;font-size:8.8px;padding:0 6px;border-radius:7px}
+  .weekly-controls .segment,.history-filter{display:grid;grid-template-columns:repeat(3,1fr);width:100%;overflow:visible}
+  .weekly-controls{gap:4px}
+  .history-toolbar{gap:5px}
+  .history-toolbar>div,.history-week-box,.history-search-box{flex:1 1 calc(50% - 3px);min-width:0!important}
+  .history-label{font-size:7.8px;margin-bottom:3px}
+
+  .weekly-table tbody{gap:6px}
+  .weekly-table tr{grid-template-columns:1fr 1fr;border-radius:9px;padding:7px}
+  .weekly-table td{padding:3px 1px;font-size:8.6px;gap:6px}
+  .weekly-table td::before{font-size:7.6px}
+  .weekly-company b{font-size:9.5px}
+  .weekly-company small{font-size:7.9px}
+  .weekly-factor,.history-table .history-status{font-size:8.1px;line-height:1.3}
+  .history-status .cn{font-size:7.6px}
+  .table-foot{font-size:7.8px;margin-top:6px}
+  .region-table th,.region-table td{font-size:8.6px;padding:7px 5px}
+}
+
+/* Extra-narrow Fold cover widths. */
+@media (max-width:390px){
+  .appbar-inner{padding-left:7px;padding-right:7px}
+  .shell{padding-left:7px;padding-right:7px}
+  .brand-mark{width:30px;height:30px;flex-basis:30px}
+  .brand-title:after{font-size:12.2px!important}
+  .icon-btn,.admin-link{width:28px;height:28px;min-width:28px}
+  .tab-btn{font-size:8.7px;padding-left:0;padding-right:0}
+  .page-head h1{font-size:16px}
+  .kpi{padding:8px;min-height:72px}
+  .kpi-value{font-size:17px}
+  .card-title{font-size:12.5px}
+  #regions-quick .region-row{grid-template-columns:52px minmax(0,1fr)}
+  #regions-quick .region-name{font-size:10px}
+  #regions-quick .region-val b{font-size:10px}
+  #regions-quick .region-val small{font-size:8.7px}
+}
