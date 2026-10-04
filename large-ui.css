@@ -66,7 +66,7 @@ body{overflow-x:hidden}
 .tabs{-webkit-overflow-scrolling:touch}
 
 /* Galaxy Fold main display / compact tablets / phone landscape */
-@media (min-width:761px) and (max-width:1180px){
+@media (min-width:700px) and (max-width:1180px){
   html{font-size:14px}
   .appbar-inner{padding:10px 14px 0}
   .shell{padding:14px 14px 34px}
@@ -137,7 +137,7 @@ body{overflow-x:hidden}
 }
 
 /* Galaxy S portrait and regular phones */
-@media (min-width:431px) and (max-width:760px){
+@media (min-width:431px) and (max-width:699px){
   html{font-size:13px}
   .appbar-inner{padding:8px 10px 0}
   .shell{padding:10px 10px 28px}
