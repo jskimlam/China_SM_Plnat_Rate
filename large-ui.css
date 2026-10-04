@@ -55,3 +55,239 @@ html{font-size:clamp(17px,calc(14px + .38vw),22px)}
 @media(min-width:1600px){.kpi{min-height:175px}.pad{padding:28px}.card-title{font-size:24px}.card-sub{font-size:17px}.status-ring{width:265px;height:265px}#changes-quick .change-name{font-size:22px}#changes-quick .change-meta,#changes-quick .change-status{font-size:18px}#changes-quick .change-value{font-size:21px}}
 @media(max-width:1100px){html{font-size:16px}.page-head h1{font-size:32px}.card-title{font-size:19px}.card-sub{font-size:14px}.kpi-value{font-size:38px}.kpi-label,.kpi-foot{font-size:14px}.chart-box{height:360px}.chart-box.tall{height:460px}.chart-box.trend-main{height:500px}.seg{font-size:13px;padding:8px 11px}#changes-quick .change-name{font-size:18px}#changes-quick .change-meta,#changes-quick .change-status{font-size:15px}#changes-quick .change-value{font-size:17px}}
 @media(max-width:720px){html{font-size:15px}.appbar-inner{padding:12px 14px 0}.brand-mark{width:40px;height:40px}.brand-title{font-size:19px}.shell{padding:18px 14px 38px}.page-head{margin-bottom:18px}.page-head h1{font-size:clamp(26px,7vw,31px)}.page-head p{font-size:13px}.card{border-radius:15px}.pad{padding:16px}.card-title{font-size:17px}.card-sub{font-size:12px}.kpi{min-height:128px;padding:16px}.kpi-label{font-size:12px}.kpi-value{font-size:clamp(28px,7vw,34px)}.kpi-foot{font-size:12px}.mini-stat span{font-size:11px}.mini-stat b{font-size:16px}.status-row,.region-name,.region-val{font-size:12px}.change-name{font-size:13px}.change-meta,.change-status{font-size:11px}.change-value{font-size:12px}.seg{font-size:12px;padding:7px 9px}.chart-box{height:300px}.chart-box.tall{height:380px}.chart-box.trend-main{height:420px}.region-table th,.region-table td{font-size:12px;padding:11px 9px}.change-card-rate{font-size:22px}.change-card-status{font-size:12px}#changes-quick .change-item{padding:16px;min-height:auto;gap:12px}#changes-quick .change-name{font-size:15px}#changes-quick .change-meta,#changes-quick .change-status{font-size:13px}#changes-quick .change-value{font-size:14px}}
+
+/* ===== 2026-10-04 Adaptive Galaxy / Fold responsive layer ===== */
+/* Keep the large desktop treatment above, but compact aggressively on phones and
+   preserve a true two-column workspace on unfolded Galaxy Fold screens. */
+body{overflow-x:hidden}
+.appbar-inner,.shell{width:100%}
+.card,.grid>*{min-width:0}
+.chart-box canvas{max-width:100%!important}
+.tabs{-webkit-overflow-scrolling:touch}
+
+/* Galaxy Fold main display / compact tablets / phone landscape */
+@media (min-width:761px) and (max-width:1180px){
+  html{font-size:14px}
+  .appbar-inner{padding:10px 14px 0}
+  .shell{padding:14px 14px 34px}
+  .topline{gap:10px}
+  .brand{gap:10px}
+  .brand-mark{width:38px;height:38px;border-radius:11px;font-size:13px}
+  .brand-title{font-size:18px}
+  .brand-sub{font-size:11px;margin-top:2px}
+  .pill,.icon-btn,.admin-link{height:34px;font-size:11px;border-radius:9px}
+  .icon-btn,.admin-link{width:34px}
+  .tabs{margin-top:9px;gap:2px}
+  .tab-btn{padding:10px 11px 11px;font-size:12px}
+  .shell .page-head{margin-bottom:13px;gap:12px}
+  .page-head h1{font-size:25px}
+  .page-head p{font-size:11.5px;line-height:1.45;margin-top:4px}
+  .meta{font-size:10.5px;line-height:1.45}
+  .grid{gap:10px}
+  .kpi-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:10px}
+  .two{grid-template-columns:minmax(0,1.35fr) minmax(250px,.9fr)}
+  .two-equal,.history-insight-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .three{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .card{border-radius:13px}
+  .pad{padding:13px}
+  .card-head{gap:10px;margin-bottom:10px}
+  .card-title{font-size:15px}
+  .card-sub{font-size:10.5px;margin-top:3px}
+  .kpi{min-height:102px;padding:12px 13px}
+  .kpi-label{font-size:10.5px}
+  .kpi-value{font-size:23px;margin-top:6px}
+  .kpi-foot{font-size:10px;gap:5px}
+  .chart-box{height:280px}
+  .chart-box.tall{height:340px}
+  .chart-box.trend-main{height:365px}
+  .mini-stats{gap:6px;margin-top:8px}
+  .mini-stat{padding:8px}
+  .mini-stat span{font-size:9.5px}
+  .mini-stat b{font-size:13px;margin-top:2px}
+  .status-ring{width:155px;height:155px;margin:4px auto 10px}
+  .status-center b{font-size:21px}
+  .status-center span{font-size:9.5px}
+  .status-list{gap:7px}
+  .status-row{font-size:10.5px;gap:7px}
+  .region-row{grid-template-columns:90px 1fr 94px;gap:8px}
+  .region-name,.region-val{font-size:10.5px}
+  .track{height:8px}
+  .change-list{gap:7px}
+  .change-item,#changes-quick .change-item{padding:9px 10px;min-height:0;gap:9px;border-radius:10px}
+  .change-name,#changes-quick .change-name{font-size:11.5px}
+  .change-meta,.change-status,#changes-quick .change-meta,#changes-quick .change-status{font-size:9.5px;margin-top:2px;line-height:1.35}
+  .change-value,#changes-quick .change-value{font-size:10.5px}
+  .segment{padding:2px;border-radius:9px}
+  .seg{font-size:10.5px;padding:6px 8px}
+  .select{height:32px;font-size:10.5px;padding:0 8px}
+  .weekly-controls{gap:6px}
+  .weekly-search{min-width:150px}
+  .weekly-table{min-width:1020px;font-size:10.5px}
+  .weekly-table th{font-size:9.5px;padding:8px 7px}
+  .weekly-table td{padding:8px 7px}
+  .weekly-company{min-width:175px}
+  .weekly-company b{font-size:10.8px}
+  .weekly-company small{font-size:9px}
+  .weekly-factor{min-width:210px;max-width:280px}
+  .history-toolbar{gap:7px}
+  .history-toolbar>div{min-width:125px}
+  .history-week-box{min-width:150px!important}
+  .history-search-box{flex-basis:170px}
+  .region-table th,.region-table td{font-size:10.5px;padding:9px 7px}
+}
+
+/* Galaxy S portrait and regular phones */
+@media (min-width:431px) and (max-width:760px){
+  html{font-size:13px}
+  .appbar-inner{padding:8px 10px 0}
+  .shell{padding:10px 10px 28px}
+  .topline{gap:7px}
+  .brand{gap:8px;min-width:0}
+  .brand-mark{width:34px;height:34px;border-radius:10px;font-size:11px;flex:0 0 auto}
+  .brand-title{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .actions{gap:5px}
+  .icon-btn,.admin-link{width:32px;height:32px;border-radius:9px}
+  .tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px;margin-top:7px;overflow:visible}
+  .tab-btn{min-width:0;padding:9px 2px 10px;font-size:10.5px;text-align:center}
+  .tab-btn.active:after{left:7px;right:7px}
+  .page-head{margin-bottom:10px;align-items:flex-start}
+  .page-head h1{font-size:20px}
+  .page-head p{font-size:10.5px;line-height:1.4;margin-top:3px}
+  .grid{gap:8px}
+  .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-bottom:8px}
+  .kpi{min-height:88px;padding:10px 11px}
+  .kpi-label{font-size:9.5px}
+  .kpi-value{font-size:20px;margin-top:5px}
+  .kpi-foot{font-size:9px;gap:4px;flex-wrap:wrap}
+  .card{border-radius:12px}
+  .pad{padding:11px}
+  .card-head{gap:8px;margin-bottom:8px}
+  .card-title{font-size:14px}
+  .card-sub{font-size:9.5px;margin-top:2px;line-height:1.35}
+  .two,.two-equal,.three,.history-insight-grid{grid-template-columns:1fr}
+  .chart-box{height:235px}
+  .chart-box.tall{height:290px}
+  .chart-box.trend-main{height:315px}
+  .mini-stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-top:7px}
+  .mini-stat{padding:7px 6px;border-radius:8px}
+  .mini-stat span{font-size:8.5px}
+  .mini-stat b{font-size:11.5px;margin-top:2px}
+  .status-ring{width:142px;height:142px;margin:3px auto 8px}
+  .status-center b{font-size:19px}
+  .status-center span{font-size:8.5px}
+  .status-list{gap:6px}
+  .status-row{font-size:9.5px;grid-template-columns:8px 1fr auto;gap:6px}
+  .status-row .dot{width:7px;height:7px}
+  .region-row{grid-template-columns:74px 1fr 84px;gap:6px}
+  .region-name,.region-val{font-size:9.5px}
+  .track{height:7px}
+  .region-list,.change-list{gap:6px}
+  .change-item,#changes-quick .change-item{padding:8px 9px;min-height:0;gap:8px;border-radius:9px}
+  .change-name,#changes-quick .change-name{font-size:10.5px}
+  .change-meta,.change-status,#changes-quick .change-meta,#changes-quick .change-status{font-size:8.8px;line-height:1.32;margin-top:2px}
+  .change-value,#changes-quick .change-value{font-size:9.5px;min-width:72px}
+  .segment{padding:2px;gap:1px}
+  .seg{font-size:9.5px;padding:6px 7px}
+  .select{height:31px;font-size:9.5px;padding:0 7px}
+  .weekly-controls{gap:5px}
+  .weekly-controls .segment{display:grid;grid-template-columns:repeat(3,1fr);width:100%;overflow:visible}
+  .weekly-controls .segment .seg{text-align:center}
+  .history-toolbar{gap:6px}
+  .history-toolbar>div,.history-week-box,.history-search-box{flex:1 1 calc(50% - 4px);min-width:0!important}
+  .history-filter{display:grid;grid-template-columns:repeat(3,1fr);overflow:visible}
+  .weekly-table tbody{gap:7px}
+  .weekly-table tr{border-radius:11px;padding:8px}
+  .weekly-table td{padding:4px 2px;font-size:9.5px;gap:8px}
+  .weekly-table td::before{font-size:8.5px}
+  .weekly-company b{font-size:10.5px}
+  .weekly-company small{font-size:8.8px}
+  .weekly-factor,.history-table .history-status{font-size:9px;line-height:1.35}
+  .history-status .cn{font-size:8.5px}
+  .region-table th,.region-table td{font-size:9.5px;padding:8px 6px}
+  .rank{width:19px;height:19px;font-size:8px;margin-right:5px}
+  .chip{min-width:43px;padding:3px 5px}
+}
+
+/* Galaxy Fold cover display and very narrow phones */
+@media (max-width:430px){
+  html{font-size:12.5px}
+  .appbar-inner{padding:7px 8px 0}
+  .shell{padding:9px 8px 24px}
+  .topline{gap:6px}
+  .brand{gap:7px;min-width:0;flex:1}
+  .brand-mark{width:31px;height:31px;border-radius:9px;font-size:10px}
+  .brand-title{font-size:0;white-space:nowrap}
+  .brand-title:after{content:"China SM Intelligence";font-size:13.5px;font-weight:700}
+  .brand-sub{display:none}
+  .actions{gap:4px}
+  .icon-btn,.admin-link{width:29px;height:29px;border-radius:8px;font-size:11px}
+  .tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;margin-top:6px;overflow:visible}
+  .tab-btn{min-width:0;padding:8px 1px 9px;font-size:9.2px;letter-spacing:-.04em;text-align:center}
+  .tab-btn.active:after{left:5px;right:5px}
+  .page-head{margin-bottom:8px}
+  .page-head h1{font-size:18px;letter-spacing:-.04em}
+  .page-head p{font-size:9.5px;line-height:1.35;margin-top:2px}
+  .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-bottom:7px}
+  .kpi{min-height:79px;padding:9px}
+  .kpi-label{font-size:8.5px}
+  .kpi-value{font-size:18px;margin-top:4px}
+  .kpi-foot{font-size:8px;gap:3px;flex-wrap:wrap}
+  .grid{gap:7px}
+  .card{border-radius:10px}
+  .pad{padding:9px}
+  .card-head{margin-bottom:7px;gap:6px}
+  .card-title{font-size:12.5px}
+  .card-sub{font-size:8.5px;line-height:1.3;margin-top:2px}
+  .two,.two-equal,.three,.history-insight-grid{grid-template-columns:1fr}
+  .chart-box{height:210px}
+  .chart-box.tall{height:260px}
+  .chart-box.trend-main{height:285px}
+  .mini-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-top:6px}
+  .mini-stat{padding:6px}
+  .mini-stat span{font-size:8px}
+  .mini-stat b{font-size:11px}
+  .status-ring{width:126px;height:126px;margin:2px auto 7px}
+  .status-center b{font-size:17px}
+  .status-center span{font-size:8px}
+  .status-list{gap:5px}
+  .status-row{font-size:8.8px;grid-template-columns:7px 1fr auto;gap:5px}
+  .region-row{grid-template-columns:64px 1fr 78px;gap:5px}
+  .region-name,.region-val{font-size:8.8px}
+  .track{height:6px}
+  .change-item,#changes-quick .change-item{padding:7px 8px;gap:7px;border-radius:8px}
+  .change-name,#changes-quick .change-name{font-size:9.8px}
+  .change-meta,.change-status,#changes-quick .change-meta,#changes-quick .change-status{font-size:8px;line-height:1.28}
+  .change-value,#changes-quick .change-value{font-size:8.8px;min-width:64px}
+  .segment{padding:1px;border-radius:8px}
+  .seg{font-size:8.8px;padding:5px 5px;border-radius:6px}
+  .select{height:29px;font-size:8.8px;padding:0 6px;border-radius:7px}
+  .weekly-controls .segment,.history-filter{display:grid;grid-template-columns:repeat(3,1fr);width:100%;overflow:visible}
+  .weekly-controls{gap:4px}
+  .weekly-search,.weekly-controls .select{flex:1 1 120px}
+  .history-toolbar{gap:5px}
+  .history-toolbar>div,.history-week-box,.history-search-box{flex:1 1 calc(50% - 3px);min-width:0!important}
+  .history-label{font-size:7.8px;margin-bottom:3px}
+  .weekly-table tbody{gap:6px}
+  .weekly-table tr{grid-template-columns:1fr 1fr;border-radius:10px;padding:7px}
+  .weekly-table td{padding:3px 1px;font-size:8.8px;gap:6px}
+  .weekly-table td::before{font-size:7.8px}
+  .weekly-company b{font-size:9.8px}
+  .weekly-company small{font-size:8px}
+  .weekly-factor,.history-table .history-status{font-size:8.3px;line-height:1.3}
+  .history-status .cn{font-size:7.8px}
+  .table-foot{font-size:8px;margin-top:6px}
+  .region-table th,.region-table td{font-size:8.8px;padding:7px 5px}
+  .rank{width:17px;height:17px;font-size:7px;margin-right:4px}
+  .chip{min-width:38px;padding:2px 4px}
+}
+
+/* Landscape phones: use the extra width rather than keeping a tall single-column layout */
+@media (max-height:520px) and (min-width:650px) and (max-width:950px) and (orientation:landscape){
+  .two,.two-equal,.history-insight-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kpi-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .chart-box{height:220px}
+  .chart-box.tall{height:250px}
+  .chart-box.trend-main{height:270px}
+  .page-head p{display:none}
+}
+
