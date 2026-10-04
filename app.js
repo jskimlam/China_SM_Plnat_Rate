@@ -26,8 +26,51 @@ const chartFont=()=>window.innerWidth<=430?9:window.innerWidth<=760?10:window.in
   const regionDelta={};
   DATA.changes.forEach(c=>{if(c.rate_prev==null||c.rate_cur==null)return;const r=DATA.regions.find(x=>x.region===c.region);if(!r||!r.capa)return;regionDelta[c.region]=(regionDelta[c.region]||0)+(Number(c.capa)||0)*(Number(c.rate_cur)-Number(c.rate_prev))/r.capa;});
   $('#regions-quick').innerHTML=DATA.regions.slice(0,8).map(r=>{const d=regionDelta[r.region]||0,prev=r.rate-d;return `<div class="region-row"><div class="region-name">${esc(r.region)}</div><div class="track"><div class="fill" style="width:${Math.max(1,r.rate*100)}%"></div></div><div class="region-val"><b>${pct(prev)} → ${pct(r.rate)}</b><small class="${cls(d)}">${pp(d)}</small></div></div>`}).join('');
-  const movers=[...DATA.changes].map(c=>({...c,impact:(Number(c.capa)||0)*((Number(c.rate_cur)||0)-(Number(c.rate_prev)||0))})).filter(c=>Math.abs(c.impact)>1).sort((a,b)=>Math.abs(b.impact)-Math.abs(a.impact)).slice(0,7);
-  $('#changes-quick').innerHTML=movers.length?movers.map(c=>`<div class="change-item"><div><div class="change-name">${esc(c.company)}</div><div class="change-meta">${esc(c.region)} · ${capa(c.capa)}</div><div class="change-status">${pct(c.rate_prev)} → ${pct(c.rate_cur)} · ${esc(c.status_cur||'')}</div></div><div class="change-value ${cls(c.impact)}">${signedCapa(c.impact)}</div></div>`).join(''):'<div class="empty">이번 주 가동 Capa 변동 없음</div>';
+  const totalCapa=Number(DATA.total_capa_latest)||1;
+  const contributors=[...DATA.changes]
+    .filter(c=>c.rate_prev!=null&&c.rate_cur!=null)
+    .map(c=>{
+      const rateDelta=Number(c.rate_cur)-Number(c.rate_prev);
+      const impact=(Number(c.capa)||0)*rateDelta;
+      return {...c,rateDelta,impact,nationalPp:impact/totalCapa};
+    })
+    .filter(c=>Math.abs(c.rateDelta)>.0005)
+    .sort((a,b)=>Math.abs(b.impact)-Math.abs(a.impact));
+  const ups=contributors.filter(c=>c.impact>0),downs=contributors.filter(c=>c.impact<0);
+  const upImpact=ups.reduce((a,c)=>a+c.impact,0),downImpact=downs.reduce((a,c)=>a+c.impact,0),netImpact=upImpact+downImpact;
+  const impactSummary=$('#impact-summary');
+  if(impactSummary){
+    impactSummary.innerHTML=[
+      ['상승 기여',signedCapa(upImpact),pp(upImpact/totalCapa),'up'],
+      ['하락 기여',signedCapa(downImpact),pp(downImpact/totalCapa),'down'],
+      ['순 효과',signedCapa(netImpact),pp(netImpact/totalCapa),cls(netImpact)]
+    ].map(x=>`<div class="impact-stat"><span>${x[0]}</span><b class="${x[3]}">${x[1]}</b><small class="${x[3]}">전국 ${x[2]}</small></div>`).join('');
+  }
+  const impactRow=c=>{
+    const statusChanged=String(c.status_prev||'')!==String(c.status_cur||'');
+    const statusText=statusChanged
+      ? `<span class="from">${esc(c.status_prev||'—')}</span><span class="arrow"> → </span>${esc(c.status_cur||'—')}`
+      : esc(c.status_cur||c.status_prev||'상태 기재 없음');
+    return `<div class="change-item impact-item">
+      <div class="impact-main">
+        <div class="change-name">${esc(c.company)}</div>
+        <div class="change-meta">${esc(c.region)} · 명목 Capa ${capa(c.capa)}</div>
+        <div class="impact-rate"><b>${pct(c.rate_prev)} → ${pct(c.rate_cur)}</b><span class="${cls(c.rateDelta)}">${pp(c.rateDelta)}</span></div>
+        <div class="change-status">${statusText}</div>
+      </div>
+      <div class="impact-values">
+        <b class="change-value ${cls(c.impact)}">${signedCapa(c.impact)}</b>
+        <small class="${cls(c.nationalPp)}">전국 ${pp(c.nationalPp)}</small>
+      </div>
+    </div>`;
+  };
+  const group=(title,arr,sum,kind)=>arr.length?`<div class="impact-group ${kind}">
+    <div class="impact-group-head"><span>${title} · ${arr.length}개 설비</span><b class="${kind}">${signedCapa(sum)} · 전국 ${pp(sum/totalCapa)}</b></div>
+    <div class="impact-group-list">${arr.map(impactRow).join('')}</div>
+  </div>`:'';
+  $('#changes-quick').innerHTML=contributors.length
+    ? group('상승 기여',ups,upImpact,'up')+group('하락 기여',downs,downImpact,'down')
+    : '<div class="empty">이번 주 가동률 변동 설비 없음</div>';
 } function renderTrendStats(){ const rows=selectedRows(),rv=rows.map(r=>r.avg_rate),cv=rows.map(r=>r.online_capa),rLast=rv.at(-1),cLast=cv.at(-1); $('#trend-title').textContent='National operating rate & capacity'; const visible=[];if(trendSeries.rate)visible.push('가동률(좌축)');if(trendSeries.capa)visible.push('가동 Capa(우축)'); $('#trend-sub').textContent=(visible.join(' + ')||'지표 선택')+' · 선택기간 자동 확대'; $('#trend-stats').innerHTML=[['현재 가동률',pct(rLast)],['기간 가동률 범위',pct(Math.min(...rv))+' ~ '+pct(Math.max(...rv))],['현재 가동 Capa',capa(cLast)],['기간 Capa 범위',capa(Math.min(...cv))+' ~ '+capa(Math.max(...cv))]].map(x=>`<div class="mini-stat"><span>${x[0]}</span><b>${x[1]}</b></div>`).join(''); const periodLabel=trendPeriod==='all'?'전체':trendPeriod+'W';$('#trend-period-note').textContent=periodLabel+' · '+rows.length+'개 관측주'; } function renderRegions(){let regs=DATA.regions.map(r=>({...r,online:r.capa*r.rate})),hi=[...regs].sort((a,b)=>b.rate-a.rate)[0],lo=[...regs].sort((a,b)=>a.rate-b.rate)[0],big=[...regs].sort((a,b)=>b.capa-a.capa)[0];$('#region-summary').innerHTML=[['Highest operating rate',hi.region,pct(hi.rate)],['Largest capacity',big.region,capa(big.capa)],['Lowest operating rate',lo.region,pct(lo.rate)]].map(x=>`<div class="card kpi"><div class="kpi-label">${x[0]}</div><div class="kpi-value region-kpi-name">${esc(x[1])}</div><div class="kpi-foot"><span class="flat">${x[2]}</span></div></div>`).join('');renderRegionTable()} function renderRegionTable(){let sort=$('#region-sort').value,regs=DATA.regions.map(r=>({...r,online:r.capa*r.rate})).sort((a,b)=>b[sort]-a[sort]);$('#region-body').innerHTML=regs.map((r,i)=>`<tr><td><span class="rank">${i+1}</span>${esc(r.region)}</td><td>${r.count}</td><td>${capa(r.capa)}</td><td><span class="chip">${pct(r.rate)}</span></td><td>${capa(r.online)}</td></tr>`).join('')} $('#region-sort').onchange=renderRegionTable; function weeklyRows(){
   if(!DETAIL||!Array.isArray(DETAIL.rows)) return [];
   return DETAIL.rows.map(r=>{const pr=Number(r.rate_prev)||0,cr=Number(r.rate_cur)||0,c=Number(r.capa)||0;return {...r,pr,cr,delta:cr-pr,prevOnline:c*pr,curOnline:c*cr,impact:c*(cr-pr),statusChanged:(r.status_prev||'')!==(r.status_cur||'')};});
