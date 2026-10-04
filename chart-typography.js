@@ -7,7 +7,9 @@
     if(w >= 1500) return 1.48;
     if(w >= 1200) return 1.38;
     if(w >= 900) return 1.28;
-    return 1.12;
+    if(w >= 700) return 1.02;
+    if(w >= 431) return 0.94;
+    return 0.88;
   }
   function scaleFont(font,f){
     if(!font) return;
