@@ -23,14 +23,6 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-
-      - name: Install Android SDK packages
-        run: |
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          which sdkmanager
-          yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platforms;android-35" "build-tools;35.0.0"
-
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
@@ -43,8 +35,10 @@ jobs:
       - name: Verify alignment and APK Signature Scheme v2+
         run: |
           APK="android-app/app/build/outputs/apk/debug/app-debug.apk"
-          "$ANDROID_HOME/build-tools/35.0.0/zipalign" -c -P 16 -v 4 "$APK"
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK" | tee apk-verify.txt
+          BUILD_TOOLS_DIR="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          echo "Using build tools: $BUILD_TOOLS_DIR"
+          "$BUILD_TOOLS_DIR/zipalign" -c -P 16 -v 4 "$APK"
+          "$BUILD_TOOLS_DIR/apksigner" verify --verbose --print-certs "$APK" | tee apk-verify.txt
           grep -q "Verified using v2 scheme (APK Signature Scheme v2): true" apk-verify.txt
 
       - name: Prepare APK
