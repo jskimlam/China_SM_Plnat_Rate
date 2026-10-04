@@ -47,11 +47,10 @@ public class MainActivity extends Activity {
         setContentView(root);
         configureWebView();
 
-        if (savedInstanceState == null) {
-            webView.loadUrl(APP_URL);
-        } else {
-            webView.restoreState(savedInstanceState);
-        }
+        // Do not restore a stale WebView document after a dashboard deployment.
+        // Keep cookies/localStorage, but drop HTTP cache and request a fresh entry page.
+        webView.clearCache(true);
+        webView.loadUrl(APP_URL + "?app=android&v=4");
     }
 
     private void configureWebView() {
@@ -65,6 +64,9 @@ public class MainActivity extends Activity {
         settings.setDisplayZoomControls(false);
         settings.setSupportMultipleWindows(false);
         settings.setMediaPlaybackRequiresUserGesture(true);
+        // Always prefer the latest GitHub Pages assets. The app is a thin web shell,
+        // so web dashboard releases should appear without rebuilding the APK.
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         settings.setUserAgentString(settings.getUserAgentString() + " ChinaSMIntelligence/1.0");
 
         webView.setWebChromeClient(new WebChromeClient() {
