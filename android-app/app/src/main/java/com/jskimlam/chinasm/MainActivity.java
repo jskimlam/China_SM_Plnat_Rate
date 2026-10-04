@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
         // Do not restore a stale WebView document after a dashboard deployment.
         // Keep cookies/localStorage, but drop HTTP cache and request a fresh entry page.
         webView.clearCache(true);
-        webView.loadUrl(APP_URL + "?app=android&v=4");
+        webView.loadUrl(APP_URL + "?app=android&v=5");
     }
 
     private void configureWebView() {
