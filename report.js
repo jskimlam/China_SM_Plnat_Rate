@@ -133,12 +133,19 @@
       if(document.fonts&&document.fonts.ready)await document.fonts.ready;
       await new Promise(function(r){setTimeout(r,100)});
       var canvas=await window.html2canvas(sheet,{backgroundColor:'#ffffff',scale:1,useCORS:true,logging:false,width:1240,height:1754,windowWidth:1240,windowHeight:1754});
-      var blob=await new Promise(function(resolve,reject){canvas.toBlob(function(b){b?resolve(b):reject(new Error('PNG 변환 실패'))},'image/png',1)});
       var week=reportDate(c.DATA,c.DETAIL,c.HISTORY).replace(/[^\dA-Za-z가-힣_-]+/g,'-');
-      var url=URL.createObjectURL(blob),a=document.createElement('a');
-      a.href=url;a.download='China_SM_Overview_Report_'+week+'.png';a.style.display='none';document.body.appendChild(a);a.click();a.remove();
-      setTimeout(function(){URL.revokeObjectURL(url)},30000);
-      toast('A4 화이트 보고서 이미지가 생성되었습니다.',true);
+      var fileName='China_SM_Overview_Report_'+week+'.png';
+      if(window.AndroidReport&&typeof window.AndroidReport.savePng==='function'){
+        var dataUrl=canvas.toDataURL('image/png',1);
+        window.AndroidReport.savePng(dataUrl,fileName);
+        toast('APK 저장 요청 완료 · 사진 앱에서 확인하세요.',true);
+      }else{
+        var blob=await new Promise(function(resolve,reject){canvas.toBlob(function(b){b?resolve(b):reject(new Error('PNG 변환 실패'))},'image/png',1)});
+        var url=URL.createObjectURL(blob),a=document.createElement('a');
+        a.href=url;a.download=fileName;a.style.display='none';document.body.appendChild(a);a.click();a.remove();
+        setTimeout(function(){URL.revokeObjectURL(url)},30000);
+        toast('A4 화이트 보고서 이미지가 생성되었습니다.',true);
+      }
     }catch(e){
       console.error(e);toast('보고서 이미지 생성 실패: '+(e&&e.message?e.message:e),false);
     }finally{
