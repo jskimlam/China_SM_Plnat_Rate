@@ -8,7 +8,7 @@
   var capa=function(v){return v==null?'—':(Number(v)/10000).toLocaleString('ko-KR',{maximumFractionDigits:1})+'만톤'};
   var signedCapa=function(v){return (Number(v)>=0?'+':'')+capa(Number(v))};
   var cls=function(v){return Number(v)>.0005?'up':Number(v)<-.0005?'down':'flat'};
-  var shortWeek=function(v){var s=String(v||'');return /^\\d{4}-\\d{2}-\\d{2}$/.test(s)?s.slice(5).replace('-','/'):s};
+  var shortWeek=function(v){var s=String(v||'');return /^\d{4}-\d{2}-\d{2}$/.test(s)?s.slice(5).replace('-','/'):s};
   var ctx=function(){return typeof window.__SM_REPORT_CONTEXT__==='function'?window.__SM_REPORT_CONTEXT__():null};
 
   function toast(msg,ok){
@@ -134,7 +134,7 @@
       await new Promise(function(r){setTimeout(r,100)});
       var canvas=await window.html2canvas(sheet,{backgroundColor:'#ffffff',scale:1,useCORS:true,logging:false,width:1240,height:1754,windowWidth:1240,windowHeight:1754});
       var blob=await new Promise(function(resolve,reject){canvas.toBlob(function(b){b?resolve(b):reject(new Error('PNG 변환 실패'))},'image/png',1)});
-      var week=reportDate(c.DATA,c.DETAIL,c.HISTORY).replace(/[^\\dA-Za-z가-힣_-]+/g,'-');
+      var week=reportDate(c.DATA,c.DETAIL,c.HISTORY).replace(/[^\dA-Za-z가-힣_-]+/g,'-');
       var url=URL.createObjectURL(blob),a=document.createElement('a');
       a.href=url;a.download='China_SM_Overview_Report_'+week+'.png';a.style.display='none';document.body.appendChild(a);a.click();a.remove();
       setTimeout(function(){URL.revokeObjectURL(url)},30000);
