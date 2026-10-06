@@ -168,17 +168,38 @@ function historyMatch(r){
 }
 function renderHistoryPlantChart(){
   if(!HISTORY||!HISTORY.plants?.length)return;
-  let p=HISTORY.plants.find(x=>x.id===historyPlantId);
-  if(!p){
-    const rows=historyPlantRows().sort((a,b)=>Math.abs(b.impact)-Math.abs(a.impact));
-    p=rows[0]||HISTORY.plants[0];
-    historyPlantId=p?.id||'';
+  const title=$('#history-chart-title'),sub=$('#history-plant-sub');
+  const selectedPlant=historyPlantId?HISTORY.plants.find(x=>x.id===historyPlantId):null;
+  let vals=[],label='가동률';
+
+  if(selectedPlant){
+    vals=selectedPlant.history.map(x=>x.rate==null?null:Number(x.rate));
+    if(title)title.textContent='선택 업체 주간 가동률 추세';
+    if(sub)sub.textContent=`${selectedPlant.company_en} · ${selectedPlant.region_ko} · 전체 ${HISTORY.weeks.length}주`;
+  }else if(historyRegion==='all'){
+    vals=HISTORY.summaries.map(x=>x.avg_rate==null?null:Number(x.avg_rate));
+    if(title)title.textContent='전국 가동률 주간 추세';
+    if(sub)sub.textContent=`전체 지역 · 68개 설비 Capa 가중 평균 · 전체 ${HISTORY.weeks.length}주`;
+  }else{
+    const plants=HISTORY.plants.filter(p=>p.region_ko===historyRegion);
+    vals=HISTORY.weeks.map((w,wi)=>{
+      let total=0,online=0;
+      plants.forEach(p=>{
+        const h=p.history&&p.history[wi];
+        if(!h)return;
+        const c=Number(h.capa)||0,r=h.rate==null?null:Number(h.rate);
+        total+=c;
+        if(r!=null&&Number.isFinite(r))online+=c*r;
+      });
+      return total?online/total:null;
+    });
+    if(title)title.textContent=`${historyRegion} 가동률 주간 추세`;
+    if(sub)sub.textContent=`${historyRegion} · ${plants.length}개 설비 Capa 가중 평균 · 전체 ${HISTORY.weeks.length}주`;
   }
-  if(!p)return;
-  const vals=p.history.map(x=>x.rate),valid=vals.filter(v=>v!=null),rr=rateAxisRange(valid);
-  const sub=$('#history-plant-sub');
-  if(sub)sub.textContent=`${p.company_en} · ${p.region_ko} · 전체 ${HISTORY.weeks.length}주`;
-  lineChart('#history-plant-chart',HISTORY.weeks.map(shortWeek),vals,'가동률',pct,css('--brand'),rr.min,rr.max);
+
+  const valid=vals.filter(v=>v!=null&&Number.isFinite(v));
+  const rr=rateAxisRange(valid);
+  lineChart('#history-plant-chart',HISTORY.weeks.map(shortWeek),vals,label,pct,css('--brand'),rr.min,rr.max);
 }
 function renderHistory(){
   if(!HISTORY){
@@ -220,7 +241,7 @@ function renderHistory(){
   renderHistoryPlantChart();
 }
 if($('#history-week'))$('#history-week').onchange=e=>{historyWeek=e.target.value;renderHistory()};
-if($('#history-region'))$('#history-region').onchange=e=>{historyRegion=e.target.value;renderHistory()};
+if($('#history-region'))$('#history-region').onchange=e=>{historyRegion=e.target.value;historyPlantId='';renderHistory()};
 if($('#history-search'))$('#history-search').oninput=e=>{historySearch=e.target.value.trim();renderHistory()};
 $$('#history-filter .seg').forEach(b=>b.onclick=()=>{$$('#history-filter .seg').forEach(x=>x.classList.remove('active'));b.classList.add('active');historyFilter=b.dataset.filter;renderHistory()});
 
