@@ -77,7 +77,7 @@
       return '<div class="rr-driver">'+
         '<div class="rr-driver-top"><b>'+esc(c.company)+'</b><strong class="'+kind+'">'+signedCapa(c.impact)+'</strong></div>'+
         '<div class="rr-driver-meta">'+esc(c.region)+' · Capa '+capa(c.capa)+' · '+pct(c.rate_prev)+' → '+pct(c.rate_cur)+' <span class="'+kind+'">'+pp(c.d)+'</span> · 전국 '+pp(c.npp)+'</div>'+
-        '<div class="rr-driver-status">'+esc(c.status_cur||c.status_prev||'상태 기재 없음')+'</div>'+
+        '<div class="rr-driver-status">'+esc((c.status_prev&&c.status_cur&&String(c.status_prev)!==String(c.status_cur))?(c.status_prev+' → '+c.status_cur):(c.status_cur||c.status_prev||'상태 기재 없음'))+'</div>'+
       '</div>';
     }).join('');
   }
