@@ -1,12 +1,16 @@
 package com.jskimlam.chinasm;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
+import android.os.Environment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -16,6 +20,13 @@ import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import android.provider.MediaStore;
+import android.util.Base64;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 public class MainActivity extends Activity {
     private static final String APP_URL = "https://jskimlam.github.io/China_SM_Plnat_Rate/";
@@ -50,7 +61,7 @@ public class MainActivity extends Activity {
         // Do not restore a stale WebView document after a dashboard deployment.
         // Keep cookies/localStorage, but drop HTTP cache and request a fresh entry page.
         webView.clearCache(true);
-        webView.loadUrl(APP_URL + "?app=android&v=5");
+        webView.loadUrl(APP_URL + "?app=android&v=6");
     }
 
     private void configureWebView() {
@@ -68,6 +79,9 @@ public class MainActivity extends Activity {
         // so web dashboard releases should appear without rebuilding the APK.
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         settings.setUserAgentString(settings.getUserAgentString() + " ChinaSMIntelligence/1.0");
+        // Native bridge used by the A4 report exporter. This makes PNG saving reliable
+        // inside Android WebView instead of depending on blob: URL download support.
+        webView.addJavascriptInterface(new ReportBridge(), "AndroidReport");
 
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -101,6 +115,70 @@ public class MainActivity extends Activity {
                 }
             }
         });
+    }
+
+    private class ReportBridge {
+        @JavascriptInterface
+        public void savePng(String dataUrl, String fileName) {
+            try {
+                String safeName = (fileName == null || fileName.isBlank())
+                        ? "China_SM_Overview_Report.png"
+                        : fileName.replaceAll("[\\\\/:*?\"<>|]", "-");
+                int comma = dataUrl == null ? -1 : dataUrl.indexOf(',');
+                if (comma < 0) {
+                    showToast("보고서 이미지 데이터가 올바르지 않습니다.");
+                    return;
+                }
+
+                byte[] bytes = Base64.decode(dataUrl.substring(comma + 1), Base64.DEFAULT);
+                String savedLocation;
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    ContentValues values = new ContentValues();
+                    values.put(MediaStore.Images.Media.DISPLAY_NAME, safeName);
+                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+                    values.put(MediaStore.Images.Media.RELATIVE_PATH,
+                            Environment.DIRECTORY_PICTURES + "/China SM Intelligence");
+                    values.put(MediaStore.Images.Media.IS_PENDING, 1);
+
+                    Uri uri = getContentResolver().insert(
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                    if (uri == null) throw new IllegalStateException("MediaStore insert failed");
+
+                    try (OutputStream out = getContentResolver().openOutputStream(uri)) {
+                        if (out == null) throw new IllegalStateException("Output stream unavailable");
+                        out.write(bytes);
+                        out.flush();
+                    }
+
+                    values.clear();
+                    values.put(MediaStore.Images.Media.IS_PENDING, 0);
+                    getContentResolver().update(uri, values, null, null);
+                    savedLocation = "사진 > China SM Intelligence";
+                } else {
+                    File dir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                            "China SM Intelligence");
+                    if (!dir.exists() && !dir.mkdirs()) {
+                        throw new IllegalStateException("Folder creation failed");
+                    }
+                    File outFile = new File(dir, safeName);
+                    try (OutputStream out = new FileOutputStream(outFile)) {
+                        out.write(bytes);
+                        out.flush();
+                    }
+                    savedLocation = outFile.getAbsolutePath();
+                }
+
+                showToast("A4 보고서 이미지 저장 완료\n" + savedLocation);
+            } catch (Exception e) {
+                showToast("보고서 이미지 저장 실패: " + e.getMessage());
+            }
+        }
+    }
+
+    private void showToast(String message) {
+        runOnUiThread(() -> Toast.makeText(
+                MainActivity.this, message, Toast.LENGTH_LONG).show());
     }
 
     @Override
