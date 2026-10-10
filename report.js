@@ -1,268 +1,146 @@
+/* China SM Intelligence · deterministic A4 canvas export v20261010b1.
+   Native Canvas2D: independent of mobile CSS, viewport and html2canvas text metrics. */
 (function(){
   'use strict';
+  var SIZE={w:1240,h:1754};
+  var C={navy:'#10284a',ink:'#132847',muted:'#60748f',pale:'#f5f8fd',line:'#dce5f2',blue:'#2862ed',cyan:'#2db6ee',red:'#d62737',green:'#139b55',amber:'#de8b06',orange:'#eb6715'};
+  var REGIONS={Jilin:'지린',Heilongjiang:'헤이룽장',Liaoning:'랴오닝',Gansu:'간쑤',Xinjiang:'신장',Ningxia:'닝샤',Shaanxi:'산시',Tianjin:'톈진',Hebei:'허베이',Shandong:'산둥',Anhui:'안후이',Shanghai:'상하이',Zhejiang:'저장',Jiangsu:'장쑤',Hubei:'후베이',Hunan:'후난',Fujian:'푸젠',Guangdong:'광둥',Guangxi:'광시',Hainan:'하이난'};
+  var getContext=function(){return typeof window.__SM_REPORT_CONTEXT__==='function'?window.__SM_REPORT_CONTEXT__():null};
+  var comma=function(n,d){return Number(n).toLocaleString('ko-KR',{minimumFractionDigits:d,maximumFractionDigits:d})};
+  var rate=function(n){return n==null?'—':(100*Number(n)).toFixed(1)+'%'};
+  var diff=function(n){return n==null?'—':(n>0?'+':'')+(100*Number(n)).toFixed(1)+'%p'};
+  var capacity=function(n){return n==null?'—':comma(Number(n)/10000,1)+'만톤'};
+  var capImpact=function(n){return (n>0?'+':'')+capacity(n)};
+  var signedColor=function(n){return n>0.000001?C.red:n<-.000001?C.blue:C.muted};
+  var safe=function(n){return Number.isFinite(Number(n))?Number(n):0};
+  var currDate=function(d,details,h){var s=String((details&&details.cur_date)||(h&&h.weeks&&h.weeks[h.weeks.length-1])||d.w_cur||'');return /^\d\d\/\d\d$/.test(s)?String(new Date().getFullYear())+'-'+s.replace('/','-'):s};
 
-  var $=function(s){return document.querySelector(s)};
-  var esc=function(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
-  var pct=function(v){return v==null?'—':(Number(v)*100).toFixed(1)+'%'};
-  var pp=function(v){return v==null?'—':(Number(v)>=0?'+':'')+(Number(v)*100).toFixed(1)+'%p'};
-  var capa=function(v){return v==null?'—':(Number(v)/10000).toLocaleString('ko-KR',{maximumFractionDigits:1})+'만톤'};
-  var signedCapa=function(v){return (Number(v)>=0?'+':'')+capa(Number(v))};
-  var cls=function(v){return Number(v)>.0005?'up':Number(v)<-.0005?'down':'flat'};
-  var shortWeek=function(v){var s=String(v||'');return /^\d{4}-\d{2}-\d{2}$/.test(s)?s.slice(5).replace('-','/'):s};
-  var ctx=function(){return typeof window.__SM_REPORT_CONTEXT__==='function'?window.__SM_REPORT_CONTEXT__():null};
-
-  function toast(msg,ok){
-    var t=document.getElementById('report-toast');
-    if(!t){t=document.createElement('div');t.id='report-toast';t.className='report-toast';document.body.appendChild(t)}
-    t.textContent=msg;t.classList.toggle('error',ok===false);t.classList.add('show');
-    clearTimeout(t._timer);t._timer=setTimeout(function(){t.classList.remove('show')},2800);
+  function round(ctx,x,y,w,h,r,fill,stroke){
+    r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();
+    if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.lineWidth=1.3;ctx.strokeStyle=stroke;ctx.stroke()}
   }
-
-  function reportDate(data,detail,history){
-    return String((detail&&detail.cur_date)||(history&&history.weeks&&history.weeks[history.weeks.length-1])||data.w_cur||'latest');
+  function font(ctx,size,weight){ctx.font=(weight||'500')+' '+size+'px "Noto Sans KR", "IBM Plex Sans KR", "Malgun Gothic", Arial, sans-serif'}
+  function text(ctx,s,x,y,maxW,size,weight,color,align,minSize){
+    s=String(s==null?'':s);size=size||17;ctx.textBaseline='alphabetic';ctx.textAlign=align||'left';
+    font(ctx,size,weight);if(maxW&&ctx.measureText(s).width>maxW){while(size>(minSize||size-3)&&ctx.measureText(s).width>maxW){size-=1;font(ctx,size,weight)}
+      if(ctx.measureText(s).width>maxW){while(s.length>2&&ctx.measureText(s+'…').width>maxW)s=s.slice(0,-1);s+='…'} }
+    ctx.fillStyle=color||C.ink;ctx.fillText(s,x,y);return size;
   }
+  function line(ctx,x1,y1,x2,y2,color,width){ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=color||C.line;ctx.lineWidth=width||1;ctx.stroke()}
+  function card(ctx,x,y,w,h){round(ctx,x,y,w,h,13,'#fff',C.line)}
+  function heading(ctx,title,sub,x,y){text(ctx,title,x,y,950,26,'800',C.navy);if(sub)text(ctx,sub,x,y+27,950,16,'500',C.muted)}
+  function dots(ctx,x,y,w,h,r,ratio,color){round(ctx,x,y,w,h,h/2,'#e8eef8');if(ratio>0)round(ctx,x,y,Math.max(2,w*Math.min(1,ratio)),h,h/2,color)}
+  function ellipsis(ctx,label,x,y,w,size,color,weight){text(ctx,label,x,y,w,size,weight||'700',color||C.ink,'left',size-2)}
+  function toast(message,ok){var el=document.getElementById('report-toast');if(!el){el=document.createElement('div');el.id='report-toast';el.className='report-toast';document.body.appendChild(el)}el.textContent=message;el.classList.toggle('error',ok===false);el.classList.add('show');clearTimeout(el._timer);el._timer=setTimeout(function(){el.classList.remove('show')},4000)}
+  function dateLabel(v){if(/^\d{4}-\d\d-\d\d$/.test(v))return v.slice(5).replace('-','/');return String(v||'')}
 
-  function lineSvg(rows){
-    if(!rows||!rows.length)return '';
-    var W=690,H=265,pl=54,pr=18,pt=24,pb=40;
-    var vals=rows.map(function(r){return Number(r.avg_rate)*100}).filter(Number.isFinite);
-    var lo=Math.max(0,Math.floor((Math.min.apply(null,vals)-3)/5)*5);
-    var hi=Math.min(100,Math.ceil((Math.max.apply(null,vals)+3)/5)*5);
-    if(hi-lo<10){hi=Math.min(100,lo+10);if(hi-lo<10)lo=Math.max(0,hi-10)}
-    var x=function(i){return pl+(W-pl-pr)*(rows.length===1?0:i/(rows.length-1))};
-    var y=function(v){return pt+(H-pt-pb)*(hi-v)/(hi-lo||1)};
-    var out=[];
-    for(var j=0;j<=4;j++){
-      var v=lo+(hi-lo)*j/4,yy=y(v);
-      out.push('<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+yy+'" y2="'+yy+'" stroke="#e2e8f0" stroke-width="1"/>');
-      out.push('<text x="'+(pl-9)+'" y="'+(yy+4)+'" text-anchor="end" font-size="13" fill="#64748b">'+v.toFixed(0)+'%</text>');
-    }
-    var points=rows.map(function(r,i){return x(i).toFixed(1)+','+y(Number(r.avg_rate)*100).toFixed(1)}).join(' ');
-    out.push('<polyline points="'+points+'" fill="none" stroke="#2563eb" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>');
-    rows.forEach(function(r,i){
-      out.push('<circle cx="'+x(i)+'" cy="'+y(Number(r.avg_rate)*100)+'" r="'+(i===rows.length-1?5:3.3)+'" fill="#fff" stroke="#2563eb" stroke-width="3"/>');
-      if(i%2===0||i===rows.length-1)out.push('<text x="'+x(i)+'" y="'+(H-13)+'" text-anchor="middle" font-size="12" fill="#64748b">'+esc(shortWeek(r.week))+'</text>');
+  function drawTrend(ctx,rows){
+    var x=92,y=515,w=633,h=265;var vals=rows.map(function(a){return safe(a.avg_rate)*100});if(!vals.length)return;
+    var min=Math.max(0,Math.floor((Math.min.apply(null,vals)-3)/5)*5),max=Math.min(100,Math.ceil((Math.max.apply(null,vals)+3)/5)*5);
+    if(max-min<15){max=Math.min(100,min+15);min=Math.max(0,max-15)}
+    for(var j=0;j<=4;j++){var v=min+(max-min)*j/4;var yy=y+h-(v-min)/(max-min)*h;line(ctx,x,yy,x+w,yy,'#e2e9f4',1);text(ctx,Math.round(v)+'%',x-13,yy+6,50,15,'500',C.muted,'right')}
+    var points=rows.map(function(r,i){return {x:x+(rows.length===1?0:i/(rows.length-1)*w),y:y+h-(safe(r.avg_rate)*100-min)/(max-min)*h}});
+    ctx.strokeStyle=C.blue;ctx.lineWidth=4.5;ctx.lineJoin='round';ctx.lineCap='round';ctx.beginPath();points.forEach(function(p,i){if(i)ctx.lineTo(p.x,p.y);else ctx.moveTo(p.x,p.y)});ctx.stroke();
+    points.forEach(function(p,i){ctx.beginPath();ctx.arc(p.x,p.y,i===points.length-1?5.5:4,0,2*Math.PI);ctx.fillStyle='#fff';ctx.fill();ctx.lineWidth=2.7;ctx.strokeStyle=C.blue;ctx.stroke();if(i%2===0||i===points.length-1)text(ctx,dateLabel(rows[i].week),p.x,818,52,14,'500',C.muted,'center')});
+    var last=points[points.length-1],r=rate(rows[rows.length-1].avg_rate),bx=Math.min(x+w-81,last.x-35),by=Math.max(y+2,last.y-49);
+    round(ctx,bx,by,81,32,7,C.navy);text(ctx,r,bx+40.5,by+23,76,18,'800','#fff','center');
+  }
+  function calcRegions(d){var deltas={};(d.changes||[]).forEach(function(c){var rp=safe(c.rate_prev),rc=safe(c.rate_cur);deltas[c.region]=(deltas[c.region]||0)+safe(c.capa)*(rc-rp)});
+    return(d.regions||[]).slice().sort(function(a,b){return safe(b.capa)-safe(a.capa)}).slice(0,8).map(function(r){return {label:REGIONS[r.region]||r.region,capa:safe(r.capa),rate:safe(r.rate),delta:r.capa?safe(deltas[r.region])/safe(r.capa):0}})}
+  function getMovers(d){var total=safe(d.total_capa_latest)||1;var all=(d.changes||[]).map(function(c){return Object.assign({},c,{impact:safe(c.capa)*(safe(c.rate_cur)-safe(c.rate_prev)),delta:safe(c.rate_cur)-safe(c.rate_prev)})}).filter(function(c){return Math.abs(c.delta)>0.0005});return {up:all.filter(function(c){return c.impact>0}).sort(function(a,b){return b.impact-a.impact}),down:all.filter(function(c){return c.impact<0}).sort(function(a,b){return a.impact-b.impact}),total:total}}
+
+  function drawMoversColumn(ctx,list,x,y,w,h,up){
+    var accent=up?C.red:C.blue,title=(up?'상승':'하락')+' 기여 · '+list.length+'개';
+    text(ctx,title,x,y+24,w,20,'800',accent);line(ctx,x,y+35,x+w,y+35,accent,2);
+    var shown=list.slice(0,5);if(!shown.length){text(ctx,'해당 기여 설비 없음',x+6,y+110,w-12,18,'500',C.muted);return}
+    var available=h-47,rowH=Math.min(133,Math.floor(available/shown.length));
+    shown.forEach(function(c,i){
+      var ry=y+42+i*rowH;var company=String(c.company||'-');
+      var info=(REGIONS[c.region]||c.region||'')+' · Capa '+capacity(c.capa)+' · '+rate(c.rate_prev)+' → '+rate(c.rate_cur)+' ('+diff(c.delta)+')';
+      text(ctx,company,x+4,ry+21,w-166,18,'800',C.ink,'left',16);text(ctx,capImpact(c.impact),x+w-4,ry+21,150,17,'800',accent,'right',15);
+      text(ctx,info,x+4,ry+46,w-12,15,'500',C.muted,'left',14);
+      var note=(c.status_prev&&c.status_cur&&c.status_prev!==c.status_cur)?String(c.status_prev)+' → '+String(c.status_cur):String(c.status_cur||c.status_prev||'');
+      if(rowH>=85)text(ctx,note,x+4,ry+70,w-12,14,'500',C.muted,'left',13);
+      if(i<shown.length-1)line(ctx,x+4,ry+rowH-3,x+w-4,ry+rowH-3,C.line,1);
     });
-    var last=rows[rows.length-1],lx=x(rows.length-1),ly=y(Number(last.avg_rate)*100),rx=Math.max(pl,lx-55),ry=Math.max(5,ly-39);
-    out.push('<rect x="'+rx+'" y="'+ry+'" width="74" height="27" rx="8" fill="#0f172a"/>');
-    out.push('<text x="'+(rx+37)+'" y="'+(ry+18)+'" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">'+pct(last.avg_rate)+'</text>');
-    return '<svg class="report-line-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="최근 12주 전국 가동률 추이">'+out.join('')+'</svg>';
   }
 
-  function regionRows(data){
-    var delta={};
-    (data.changes||[]).forEach(function(c){
-      if(c.rate_prev==null||c.rate_cur==null)return;
-      var r=(data.regions||[]).find(function(x){return x.region===c.region});
-      if(!r||!r.capa)return;
-      delta[c.region]=(delta[c.region]||0)+(Number(c.capa)||0)*(Number(c.rate_cur)-Number(c.rate_prev))/Number(r.capa);
+  function draw(data,detail,history){
+    if(!data||!Array.isArray(data.national)||!data.national.length)throw new Error('가동률 데이터가 없습니다.');
+    var cvs=document.createElement('canvas');cvs.width=SIZE.w;cvs.height=SIZE.h;var g=cvs.getContext('2d');if(!g)throw new Error('Canvas2D 초기화 실패');
+    g.fillStyle='#fff';g.fillRect(0,0,SIZE.w,SIZE.h);
+    g.fillStyle=C.navy;g.fillRect(0,0,768,12);g.fillStyle=C.blue;g.fillRect(768,0,271,12);g.fillStyle=C.cyan;g.fillRect(1039,0,201,12);
+    var dates=currDate(data,detail,history),nat=data.national,cur=nat[nat.length-1],prev=nat[nat.length-2]||cur;
+    // Header: all text constrained to distinct, non-overlapping rectangular zones.
+    text(g,'WEEKLY OPERATING SUMMARY',50,51,680,19,'800',C.blue);
+    text(g,'China SM Operating Rate',50,112,825,48,'800',C.navy,'left',45);
+    text(g,'중국 스티렌 설비 가동률 · 주간 수급 모니터링',50,150,790,19,'500',C.muted);
+    text(g,'기준 주차',1190,65,248,17,'800',C.muted,'right');
+    text(g,dates,1190,111,270,33,'800',C.navy,'right');
+    text(g,'68 PLANTS  /  20 REGIONS',1190,150,270,14,'700',C.muted,'right');
+    line(g,50,171,1190,171,C.line,2);
+
+    // KPI cards: large figures, fixed internal baselines (no line-height reflow).
+    var kpis=[['전국 평균 가동률',rate(cur.avg_rate),diff(safe(cur.avg_rate)-safe(prev.avg_rate))+'  전주 대비',signedColor(safe(cur.avg_rate)-safe(prev.avg_rate))],
+      ['가동 Capa',capacity(cur.online_capa),capImpact(safe(cur.online_capa)-safe(prev.online_capa))+'  전주 대비',signedColor(safe(cur.online_capa)-safe(prev.online_capa))],
+      ['총 설치 Capa',capacity(data.total_capa_latest),String(data.facility_count||68)+'개 설비',C.muted],
+      ['변동 설비',(data.changes||[]).length+'개','가동률 '+(data.changes||[]).filter(function(c){return c.rate_changed}).length+' · 상태 '+(data.changes||[]).filter(function(c){return !c.rate_changed}).length,C.muted]];
+    kpis.forEach(function(k,i){var x=50+i*289,y=190;round(g,x,y,273,149,12,C.pale,C.line);g.fillStyle=C.blue;g.fillRect(x+1,y+1,271,5);text(g,k[0],x+17,y+38,244,19,'700',C.muted);text(g,k[1],x+17,y+93,245,36,'800',C.navy,'left',30);text(g,k[2],x+17,y+124,244,16,'700',k[3],'left',14)});
+
+    // National history chart and status mix.
+    card(g,50,356,715,496);card(g,780,356,410,496);
+    heading(g,'전국 가동률 추이','최근 12개 관측주 · Capa 가중 평균',77,403);text(g,rate(cur.avg_rate),736,406,160,31,'800',C.blue,'right');
+    drawTrend(g,nat.slice(-12));
+    heading(g,'Operating status mix','최신주 · 설비 Capa 기준',803,403);
+    round(g,804,447,362,91,10,C.pale,C.line);text(g,capacity(data.total_capa_latest),985,493,344,31,'800',C.navy,'center');text(g,'총 설비 Capa',985,518,330,15,'500',C.muted,'center');
+    var statuses=[['good','정상 가동',C.green],['warning','저부하·감산',C.amber],['serious','정기보수',C.orange],['critical','가동 중단',C.red]], mix=data.status_mix||{};
+    var sum=Object.keys(mix).reduce(function(a,k){return a+safe(mix[k])},0)||1;
+    statuses.forEach(function(a,i){var x=805,y=550+i*72,n=safe(mix[a[0]]),share=n/sum;
+      g.fillStyle=a[2];g.fillRect(x,y+2,8,9);text(g,a[1],x+19,y+18,195,17,'800',C.ink);text(g,(share*100).toFixed(1)+'%',1165,y+18,110,17,'800',C.ink,'right');
+      dots(g,x,y+29,360,9,5,share,a[2]);text(g,capacity(n),x,y+56,345,14,'500',C.muted);
     });
-    return (data.regions||[]).slice().sort(function(a,b){return Number(b.capa)-Number(a.capa)}).slice(0,8).map(function(r){
-      return {region:r.region,rate:Number(r.rate)||0,delta:delta[r.region]||0,capa:Number(r.capa)||0};
+
+    // Regional 4 x 2 tiles, each clipped to its own designated space.
+    card(g,50,866,1140,369);heading(g,'지역별 가동 현황','설비 Capa 상위 8개 지역 · 전주 대비 변화',75,911);
+    var regions=calcRegions(data);regions.forEach(function(r,i){var col=i%4,row=Math.floor(i/4),x=75+col*277,y=949+row*134;
+      round(g,x,y,263,122,10,C.pale,C.line);
+      text(g,r.label,x+14,y+29,126,19,'800',C.ink);text(g,capacity(r.capa),x+248,y+28,112,13,'500',C.muted,'right');
+      text(g,rate(r.rate),x+14,y+77,143,30,'800',C.navy);text(g,diff(r.delta),x+249,y+77,100,15,'800',signedColor(r.delta),'right');
+      dots(g,x+14,y+94,233,10,5,r.rate,C.blue);
     });
-  }
 
-  function contributors(data){
-    var total=Number(data.total_capa_latest)||1;
-    var all=(data.changes||[]).filter(function(c){return c.rate_prev!=null&&c.rate_cur!=null}).map(function(c){
-      var d=Number(c.rate_cur)-Number(c.rate_prev),impact=(Number(c.capa)||0)*d;
-      var o={};for(var k in c)o[k]=c[k];o.d=d;o.impact=impact;o.npp=impact/total;return o;
-    }).filter(function(c){return Math.abs(c.d)>.0005}).sort(function(a,b){return Math.abs(b.impact)-Math.abs(a.impact)});
-    return {all:all,ups:all.filter(function(x){return x.impact>0}),downs:all.filter(function(x){return x.impact<0}),total:total};
-  }
+    // Movers: dynamic row heights, largest possible font within five rows per column.
+    card(g,50,1249,1140,426);
+    heading(g,'이번 주 가동률 변동 주요 기여 설비','가동 Capa 증감 기준 · 방향별 최대 5개',75,1295);
+    var movers=getMovers(data),ui=movers.up.reduce(function(a,c){return a+c.impact},0),di=movers.down.reduce(function(a,c){return a+c.impact},0);
+    text(g,'상승 '+capImpact(ui)+' · '+diff(ui/movers.total),1165,1289,350,17,'800',C.red,'right');
+    text(g,'하락 '+capImpact(di)+' · '+diff(di/movers.total),1165,1314,350,17,'800',C.blue,'right');
+    drawMoversColumn(g,movers.up,75,1334,518,318,true);drawMoversColumn(g,movers.down,611,1334,554,318,false);
 
-  function driverRows(arr,kind){
-    if(!arr.length)return '<div class="rr-none">해당 기여 설비 없음</div>';
-    return arr.slice(0,5).map(function(c){
-      return '<div class="rr-driver">'+
-        '<div class="rr-driver-top"><b>'+esc(c.company)+'</b><strong class="'+kind+'">'+signedCapa(c.impact)+'</strong></div>'+
-        '<div class="rr-driver-meta">'+esc(c.region)+' · Capa '+capa(c.capa)+' · '+pct(c.rate_prev)+' → '+pct(c.rate_cur)+' <span class="'+kind+'">'+pp(c.d)+'</span> · 전국 '+pp(c.npp)+'</div>'+
-        '<div class="rr-driver-status">'+esc((c.status_prev&&c.status_cur&&String(c.status_prev)!==String(c.status_cur))?(c.status_prev+' → '+c.status_cur):(c.status_cur||c.status_prev||'상태 기재 없음'))+'</div>'+
-      '</div>';
-    }).join('');
-  }
-
-  function buildSheet(data,detail,history){
-    var national=(data.national||[]).slice(-12),cur=national[national.length-1],prev=national[national.length-2]||cur;
-    var rd=Number(cur.avg_rate)-Number(prev.avg_rate),cd=Number(cur.online_capa)-Number(prev.online_capa);
-    var sm=data.status_mix||{},statusTotal=Object.keys(sm).reduce(function(a,k){return a+(Number(sm[k])||0)},0)||1;
-    var defs=[['good','정상 가동','#16a34a'],['warning','저부하·감산','#d97706'],['serious','정기보수','#ea580c'],['critical','가동 중단','#dc2626']];
-    var regs=regionRows(data),con=contributors(data);
-    var upImpact=con.ups.reduce(function(a,x){return a+x.impact},0),downImpact=con.downs.reduce(function(a,x){return a+x.impact},0);
-    var source=window.__SM_DATA_SOURCE__==='snapshot'?'Saved snapshot / ICIS weekly parsing':'Internal DB / ICIS weekly parsing';
-    var made=new Date().toLocaleString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
-    var statusHtml=defs.map(function(d){
-      var v=Number(sm[d[0]])||0,share=v/statusTotal;
-      return '<div class="rr-status-row"><div class="rr-status-label"><span style="background:'+d[2]+'"></span><b>'+d[1]+'</b><em>'+pct(share)+'</em></div><div class="rr-status-track"><i style="width:'+Math.max(1,share*100)+'%;background:'+d[2]+'"></i></div><small>'+capa(v)+'</small></div>';
-    }).join('');
-    var regionHtml=regs.map(function(r){
-      return '<div class="rr-region"><div><b>'+esc(r.region)+'</b><small>'+capa(r.capa)+'</small></div><div class="rr-region-rate"><strong>'+pct(r.rate)+'</strong><span class="'+cls(r.delta)+'">'+pp(r.delta)+'</span></div><div class="rr-region-track"><i style="width:'+Math.max(1,r.rate*100)+'%"></i></div></div>';
-    }).join('');
-
-    var sheet=document.createElement('div');
-    sheet.className='a4-report-sheet';
-    sheet.innerHTML=
-      '<div class="rr-topbar"></div>'+
-      '<header class="rr-header"><div><div class="rr-eyebrow">WEEKLY OPERATING SUMMARY</div><h1>China SM Operating Rate Intelligence</h1><p>Styrene Plant Operations, Capacity & Regional Analytics</p></div><div class="rr-date"><span>기준 주차</span><b>'+esc(reportDate(data,detail,history))+'</b><small>Generated '+esc(made)+'</small></div></header>'+
-      '<section class="rr-kpis">'+
-        '<div><span>전국 평균 가동률</span><b>'+pct(cur.avg_rate)+'</b><small class="'+cls(rd)+'">'+pp(rd)+' WoW</small></div>'+
-        '<div><span>가동 Capa</span><b>'+capa(cur.online_capa)+'</b><small class="'+cls(cd)+'">'+signedCapa(cd)+' WoW</small></div>'+
-        '<div><span>총 설치 Capa</span><b>'+capa(data.total_capa_latest)+'</b><small>'+(data.facility_count||68)+'개 설비</small></div>'+
-        '<div><span>변동 설비</span><b>'+con.all.length+'개</b><small>상승 '+con.ups.length+' · 하락 '+con.downs.length+'</small></div>'+
-      '</section>'+
-      '<section class="rr-grid rr-main">'+
-        '<article class="rr-box rr-trend"><div class="rr-sec-head"><div><h2>전국 가동률 추이</h2><p>최근 12개 관측주 · Capa 가중 평균</p></div><b>'+pct(cur.avg_rate)+'</b></div>'+lineSvg(national)+'</article>'+
-        '<article class="rr-box rr-status"><div class="rr-sec-head"><div><h2>Operating status mix</h2><p>최신주 · 설비 Capa 기준</p></div></div><div class="rr-status-total"><b>'+capa(statusTotal)+'</b><span>총 설비 Capa</span></div><div class="rr-status-list">'+statusHtml+'</div></article>'+
-      '</section>'+
-      '<section class="rr-box rr-regions"><div class="rr-sec-head"><div><h2>지역별 가동 현황</h2><p>Capa 상위 8개 지역 · 전주 대비 가동률 변화</p></div></div><div class="rr-region-grid">'+regionHtml+'</div></section>'+
-      '<section class="rr-box rr-drivers"><div class="rr-sec-head"><div><h2>이번 주 가동률 변동 주요 기여 설비</h2><p>가동 Capa 영향 기준 · 각 방향 최대 5개 표시</p></div><div class="rr-driver-net"><span class="up">상승 '+signedCapa(upImpact)+' · '+pp(upImpact/con.total)+'</span><span class="down">하락 '+signedCapa(downImpact)+' · '+pp(downImpact/con.total)+'</span></div></div>'+
-        '<div class="rr-driver-cols"><div><h3 class="up">상승 기여 · '+con.ups.length+'개</h3>'+driverRows(con.ups,'up')+'</div><div><h3 class="down">하락 기여 · '+con.downs.length+'개</h3>'+driverRows(con.downs,'down')+'</div></div>'+
-      '</section>'+
-      '<footer class="rr-footer"><div><b>Source</b> '+esc(source)+'</div><div>Operating Capa = Nameplate Capa × Operating Rate · Capa unit: tons/year</div></footer>';
-    return sheet;
-  }
-
-  // Render in an independent 1240px viewport. Android WebView otherwise autosizes
-  // the text against the narrow phone viewport before html2canvas clones the DOM.
-  async function createReportFrame(sheet){
-    var frame=document.createElement('iframe');
-    frame.title='A4 report print viewport';
-    frame.setAttribute('aria-hidden','true');
-    frame.setAttribute('tabindex','-1');
-    frame.style.cssText='position:fixed;left:-16000px;top:0;width:1240px;height:1754px;border:0;z-index:-1;pointer-events:none;';
-    var html='<!doctype html><html lang="ko"><head>'+
-      '<meta charset="utf-8">'+
-      '<meta name="viewport" content="width=1240,initial-scale=1,minimum-scale=1">'+
-      '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap">'+
-      '<link rel="stylesheet" href="large-ui.css?v=20261010a5">'+
-      '<style>html,body{width:1240px;height:1754px;margin:0;padding:0;overflow:hidden;-webkit-text-size-adjust:100%!important;text-size-adjust:100%!important}'+
-      '.a4-report-sheet{position:relative!important;left:0!important;top:0!important;z-index:auto!important;'+
-      'margin:0!important;transform:none!important;max-width:none!important}'+
-      '</style></head><body></body></html>';
-    var done=new Promise(function(resolve,reject){
-      var timer=setTimeout(function(){reject(new Error('A4 렌더러 로딩 시간 초과'))},15000);
-      frame.onload=function(){clearTimeout(timer);resolve()};
-      frame.onerror=function(){clearTimeout(timer);reject(new Error('A4 렌더러 로딩 오류'))};
-    });
-    frame.srcdoc=html;
-    document.body.appendChild(frame);
-    try{
-      await done;
-      var doc=frame.contentDocument;
-      if(!doc||!doc.body)throw new Error('A4 렌더링 문서 접근 실패');
-      doc.body.appendChild(sheet);
-      // Abort rather than exporting an unreadable image if the print stylesheet did not load.
-      var kpi=sheet.querySelector('.rr-kpis>div');
-      if(!kpi||doc.defaultView.getComputedStyle(kpi).display!=='flex'){
-        throw new Error('A4 전용 스타일 로딩 실패');
-      }
-      if(doc.fonts&&doc.fonts.ready)await doc.fonts.ready;
-      await new Promise(function(resolve){
-        frame.contentWindow.requestAnimationFrame(function(){
-          frame.contentWindow.requestAnimationFrame(resolve);
-        });
-      });
-      return frame;
-    }catch(e){
-      frame.remove();
-      throw e;
-    }
-  }
-
-  function checkReportFit(sheet){
-    var reasons=[];
-    var within=function(container,target,name,margin){
-      if(!container||!target){reasons.push(name+' 요소 없음');return}
-      var a=container.getBoundingClientRect(),b=target.getBoundingClientRect();
-      if(b.bottom>a.bottom-(margin||0)+2||b.right>a.right+3||b.left<a.left-3){
-        reasons.push(name+' 영역 초과');
-      }
-    };
-    var head=sheet.querySelector('.rr-header'),title=sheet.querySelector('.rr-header h1'),date=sheet.querySelector('.rr-date');
-    if(head&&title&&date){
-      if(title.getBoundingClientRect().right>date.getBoundingClientRect().left-10){
-        reasons.push('제목/기준일 겹침');
-      }
-      within(head,title,'제목',0);
-    }
-    sheet.querySelectorAll('.rr-kpis>div').forEach(function(card,i){
-      within(card,card.querySelector('small'),'KPI '+(i+1),6);
-      within(card,card.querySelector('b'),'KPI 수치 '+(i+1),0);
-    });
-    var status=sheet.querySelector('.rr-status'),statusLast=sheet.querySelector('.rr-status-row:last-child');
-    within(status,statusLast,'운영상태',10);
-    var region=sheet.querySelector('.rr-regions'),grid=sheet.querySelector('.rr-region-grid');
-    within(region,grid,'지역별 현황',10);
-    var drivers=sheet.querySelector('.rr-drivers');
-    sheet.querySelectorAll('.rr-driver-cols>div').forEach(function(col,i){
-      var last=col.lastElementChild;
-      if(last&&last.classList.contains('rr-driver'))within(drivers,last,'설비 변동 '+(i+1),10);
-    });
-    var foot=sheet.querySelector('.rr-footer');
-    within(sheet,foot,'출처',1);
-    return reasons;
+    // A4 footer.
+    line(g,50,1693,1190,1693,C.line,2);
+    text(g,'Source  ICIS Styrene China weekly / '+(window.__SM_DATA_SOURCE__==='snapshot'?'Saved snapshot':'Internal DB'),50,1721,670,14,'500',C.muted);
+    text(g,'Operating Capa = Nameplate Capa × Operating Rate',1190,1721,540,14,'500',C.muted,'right');
+    return cvs;
   }
 
   async function save(){
-    var c=ctx();
-    if(!c||!c.DATA)return toast('데이터 로딩 후 다시 시도해 주세요.',false);
-    if(typeof window.html2canvas!=='function')return toast('이미지 생성 모듈을 불러오지 못했습니다.',false);
-    var btn=$('#report-image'),old=btn?btn.innerHTML:'',sheet=null,frame=null;
-    if(btn){btn.disabled=true;btn.innerHTML='생성 중…'}
+    var context=getContext();if(!context||!context.DATA)return toast('데이터 로딩 후 다시 시도해 주세요.',false);
+    var button=document.getElementById('report-image'),label=button?button.textContent:'';
+    if(button){button.disabled=true;button.textContent='A4 생성 중…'}
     try{
-      sheet=buildSheet(c.DATA,c.DETAIL,c.HISTORY);
-      frame=await createReportFrame(sheet);
-      // A4 title must stay in one line; tighten font only when it truly overflows.
-      var title=sheet.querySelector('.rr-header h1');
-      if(title&&title.scrollWidth>title.clientWidth+1){
-        var size=Number.parseFloat(frame.contentWindow.getComputedStyle(title).fontSize);
-        title.style.fontSize=Math.max(30,Math.floor(size*title.clientWidth/title.scrollWidth-1))+'px';
-      }
-      var problems=checkReportFit(sheet);
-      if(problems.length){
-        sheet.classList.add('rr-tight');
-        await new Promise(function(resolve){frame.contentWindow.requestAnimationFrame(resolve)});
-        problems=checkReportFit(sheet);
-      }
-      if(problems.length){
-        sheet.classList.add('rr-compact');
-        await new Promise(function(resolve){frame.contentWindow.requestAnimationFrame(resolve)});
-        problems=checkReportFit(sheet);
-      }
-      if(problems.length){
-        console.warn('A4 layout exceeded after compact fit:',problems);
-        throw new Error('A4 영역 초과: '+problems.join(', '));
-      }
-      var canvas=await window.html2canvas(sheet,{
-        backgroundColor:'#ffffff',scale:1,useCORS:true,logging:false,
-        width:1240,height:1754,windowWidth:1240,windowHeight:1754,
-        scrollX:0,scrollY:0
-      });
-      if(canvas.width!==1240||canvas.height!==1754)throw new Error('A4 이미지 크기 오류');
-      var week=reportDate(c.DATA,c.DETAIL,c.HISTORY).replace(/[^\dA-Za-z가-힣_-]+/g,'-');
-      var fileName='China_SM_Overview_Report_'+week+'.png';
+      if(document.fonts&&document.fonts.load){try{await document.fonts.load('700 18px "Noto Sans KR"');await document.fonts.ready}catch(_){} }
+      var canvas=draw(context.DATA,context.DETAIL,context.HISTORY);
+      var file='China_SM_Overview_Report_'+currDate(context.DATA,context.DETAIL,context.HISTORY).replace(/[^0-9A-Za-z_-]/g,'-')+'.png';
       if(window.AndroidReport&&typeof window.AndroidReport.savePng==='function'){
-        var dataUrl=canvas.toDataURL('image/png');
-        window.AndroidReport.savePng(dataUrl,fileName);
-        toast('APK 저장 요청 완료 · 사진 앱에서 확인하세요.',true);
+        window.AndroidReport.savePng(canvas.toDataURL('image/png'),file);toast('A4 이미지 저장 요청 완료 · 사진 앱에서 확인하세요.',true);
       }else{
-        var blob=await new Promise(function(resolve,reject){
-          canvas.toBlob(function(b){b?resolve(b):reject(new Error('PNG 변환 실패'))},'image/png');
-        });
-        var url=URL.createObjectURL(blob),a=document.createElement('a');
-        a.href=url;a.download=fileName;a.style.display='none';document.body.appendChild(a);a.click();a.remove();
-        setTimeout(function(){URL.revokeObjectURL(url)},30000);
-        toast('A4 보고서 이미지가 생성되었습니다.',true);
+        var blob=await new Promise(function(resolve,reject){canvas.toBlob(function(b){b?resolve(b):reject(new Error('PNG 변환 실패'))},'image/png')});
+        var url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=file;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},30000);toast('A4 보고서 이미지가 생성되었습니다.',true)
       }
-    }catch(e){
-      console.error(e);toast('보고서 이미지 생성 실패: '+(e&&e.message?e.message:e),false);
-    }finally{
-      if(frame)frame.remove();
-      else if(sheet)sheet.remove();
-      if(btn){btn.disabled=false;btn.innerHTML=old}
-    }
+    }catch(e){console.error('SM A4 export',e);toast('A4 저장 실패: '+(e&&e.message?e.message:String(e)),false)}
+    finally{if(button){button.disabled=false;button.textContent=label}}
   }
-
-  var btn=$('#report-image');
-  if(btn)btn.addEventListener('click',save);
+  window.__SM_CANVAS_REPORT__={draw:draw,calcRegions:calcRegions,getMovers:getMovers};
+  var button=document.getElementById('report-image');if(button)button.addEventListener('click',save);
 })();
