@@ -494,3 +494,92 @@ body{overflow-x:hidden}
   .report-btn{width:33px;padding:0;font-size:0}
   .report-btn:before{content:"▣";font-size:13px}
 }
+
+/* ===== 2026-10-10 Isolated A4 export typography and layout ===== */
+/* All reporting measurements are fixed in px, independent of mobile media and text autosizing. */
+.a4-report-sheet{
+  width:1240px!important;height:1754px!important;
+  padding:0 42px 28px!important;
+  display:grid!important;
+  grid-template-rows:12px 136px 148px 466px 412px minmax(0,1fr) 48px;
+  row-gap:14px;
+  overflow:hidden!important;
+  background:#ffffff!important;color:#0f172a!important;
+  font-family:'Noto Sans KR',Arial,sans-serif!important;
+  -webkit-text-size-adjust:100%!important;text-size-adjust:100%!important;
+  font-size:15px!important;line-height:1.4!important;
+}
+.a4-report-sheet *{box-sizing:border-box!important;min-width:0;-webkit-text-size-adjust:100%!important;text-size-adjust:100%!important}
+.a4-report-sheet .rr-topbar{height:12px;margin:0 -42px;background:linear-gradient(90deg,#102e59 0 62%,#2563eb 62% 84%,#38bdf8 84% 100%)}
+.a4-report-sheet .rr-header{height:auto;display:flex;align-items:center;gap:24px;justify-content:space-between;border-bottom:2px solid #dbe3ef}
+.a4-report-sheet .rr-header>div:first-child{min-width:0;flex:1 1 auto}
+.a4-report-sheet .rr-eyebrow{font-size:15px;letter-spacing:.12em;margin-bottom:8px}
+.a4-report-sheet .rr-header h1{font-size:37px;line-height:1.12;font-weight:800;white-space:nowrap;letter-spacing:-.047em;margin:0;color:#10284d}
+.a4-report-sheet .rr-header p{font-size:15px;line-height:1.4;margin:9px 0 0;color:#60728c}
+.a4-report-sheet .rr-date{width:230px;flex:0 0 230px;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.a4-report-sheet .rr-date span{font-size:15px;line-height:1.3}
+.a4-report-sheet .rr-date b{font-size:27px;line-height:1.15;white-space:nowrap}
+.a4-report-sheet .rr-date small{font-size:12px;line-height:1.35;white-space:nowrap}
+.a4-report-sheet .rr-kpis{height:auto;margin:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.a4-report-sheet .rr-kpis>div{
+  height:100%;min-height:0;padding:18px 16px 15px;
+  border:1px solid #dbe3ef;border-top:4px solid #2563eb;border-radius:11px;
+  background:#f8fafc;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;
+}
+.a4-report-sheet .rr-kpis span{display:block;font-size:16px;line-height:1.25;font-weight:700;margin:0}
+.a4-report-sheet .rr-kpis b{display:block;font-size:30px;line-height:1.18;font-weight:800;letter-spacing:-.045em;white-space:nowrap;margin:0}
+.a4-report-sheet .rr-kpis small{display:block;font-size:13px;line-height:1.25;font-weight:700;margin:0;white-space:nowrap}
+.a4-report-sheet .rr-main{height:auto;margin:0;grid-template-columns:minmax(0,1.66fr) minmax(350px,.96fr);gap:14px}
+.a4-report-sheet .rr-box{height:auto;margin:0;padding:22px 23px;border-radius:13px;min-height:0}
+.a4-report-sheet .rr-sec-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:13px}
+.a4-report-sheet .rr-sec-head h2{font-size:23px;line-height:1.2;font-weight:800;margin:0;color:#10284d}
+.a4-report-sheet .rr-sec-head p{font-size:14px;line-height:1.35;margin:6px 0 0}
+.a4-report-sheet .rr-sec-head>b{font-size:29px;line-height:1.15;white-space:nowrap}
+.a4-report-sheet .report-line-svg{display:block;width:100%;height:342px}
+.a4-report-sheet .rr-status-total{padding:14px 12px;margin:7px 0 14px;border-radius:11px}
+.a4-report-sheet .rr-status-total b{font-size:30px;line-height:1.2}
+.a4-report-sheet .rr-status-total span{font-size:13px;line-height:1.4}
+.a4-report-sheet .rr-status-list{display:grid;gap:11px}
+.a4-report-sheet .rr-status-label{grid-template-columns:11px 1fr auto;gap:9px}
+.a4-report-sheet .rr-status-label b,.a4-report-sheet .rr-status-label em{font-size:14px;line-height:1.3}
+.a4-report-sheet .rr-status-row small{display:block;font-size:12px;line-height:1.3}
+.a4-report-sheet .rr-status-track{height:9px;margin:6px 0 5px}
+.a4-report-sheet .rr-regions{height:auto}
+.a4-report-sheet .rr-region-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));height:315px;gap:13px}
+.a4-report-sheet .rr-region{
+  height:100%;display:flex;flex-direction:column;justify-content:space-between;
+  padding:14px 15px;border-radius:11px;
+}
+.a4-report-sheet .rr-region>div:first-child{gap:4px}
+.a4-report-sheet .rr-region b{font-size:17px;line-height:1.25}
+.a4-report-sheet .rr-region small{font-size:11px;line-height:1.3}
+.a4-report-sheet .rr-region-rate{display:flex;align-items:baseline;gap:8px;margin:7px 0 0}
+.a4-report-sheet .rr-region-rate strong{font-size:27px;line-height:1.12;letter-spacing:-.03em}
+.a4-report-sheet .rr-region-rate span{font-size:13px;line-height:1.3;white-space:nowrap}
+.a4-report-sheet .rr-region-track{height:9px;margin-top:9px}
+.a4-report-sheet .rr-drivers{height:auto;padding:17px 21px}
+.a4-report-sheet .rr-drivers .rr-sec-head{margin-bottom:10px}
+.a4-report-sheet .rr-drivers .rr-sec-head h2{font-size:22px}
+.a4-report-sheet .rr-driver-net{font-size:13px;line-height:1.35}
+.a4-report-sheet .rr-driver-cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.a4-report-sheet .rr-driver-cols h3{font-size:17px;line-height:1.25;margin:0 0 5px;padding-bottom:6px}
+.a4-report-sheet .rr-driver{padding:6px 0;border-bottom:1px solid #e2e8f0}
+.a4-report-sheet .rr-driver-top{display:flex;align-items:baseline;gap:10px;justify-content:space-between}
+.a4-report-sheet .rr-driver-top b{font-size:15px;line-height:1.28;max-width:73%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.a4-report-sheet .rr-driver-top strong{font-size:14px;line-height:1.25;white-space:nowrap}
+.a4-report-sheet .rr-driver-meta{font-size:12px;line-height:1.32;margin-top:4px;overflow-wrap:anywhere}
+.a4-report-sheet .rr-driver-status{font-size:12px;line-height:1.32;margin-top:3px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.a4-report-sheet .rr-none{font-size:14px}
+.a4-report-sheet .rr-footer{
+  height:auto;margin:0;padding-top:11px;border-top:1px solid #cbd5e1;
+  display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
+  font-size:12px;line-height:1.3;
+}
+.a4-report-sheet .rr-footer>div:last-child{text-align:right}
+.a4-report-sheet.rr-tight .rr-header h1{font-size:34px}
+.a4-report-sheet.rr-tight .rr-kpis b{font-size:28px}
+.a4-report-sheet.rr-tight .rr-status-list{gap:7px}
+.a4-report-sheet.rr-tight .rr-region-grid{height:305px}
+.a4-report-sheet.rr-tight .rr-driver{padding:4px 0}
+.a4-report-sheet.rr-tight .rr-driver-top b{font-size:14px}
+.a4-report-sheet.rr-tight .rr-driver-meta,.a4-report-sheet.rr-tight .rr-driver-status{font-size:11px}
