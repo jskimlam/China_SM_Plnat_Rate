@@ -122,34 +122,137 @@
     return sheet;
   }
 
+  // Render in an independent 1240px viewport. Android WebView otherwise autosizes
+  // the text against the narrow phone viewport before html2canvas clones the DOM.
+  async function createReportFrame(sheet){
+    var frame=document.createElement('iframe');
+    frame.title='A4 report print viewport';
+    frame.setAttribute('aria-hidden','true');
+    frame.setAttribute('tabindex','-1');
+    frame.style.cssText='position:fixed;left:-16000px;top:0;width:1240px;height:1754px;border:0;z-index:-1;pointer-events:none;';
+    var html='<!doctype html><html lang="ko"><head>'+
+      '<meta charset="utf-8">'+
+      '<meta name="viewport" content="width=1240,initial-scale=1,minimum-scale=1">'+
+      '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap">'+
+      '<link rel="stylesheet" href="large-ui.css?v=20261010a4">'+
+      '<style>html,body{width:1240px;height:1754px;margin:0;padding:0;overflow:hidden;-webkit-text-size-adjust:100%!important;text-size-adjust:100%!important}'+
+      '.a4-report-sheet{position:relative!important;left:0!important;top:0!important;z-index:auto!important;'+
+      'margin:0!important;transform:none!important;max-width:none!important}'+
+      '</style></head><body></body></html>';
+    var done=new Promise(function(resolve,reject){
+      var timer=setTimeout(function(){reject(new Error('A4 렌더러 로딩 시간 초과'))},15000);
+      frame.onload=function(){clearTimeout(timer);resolve()};
+      frame.onerror=function(){clearTimeout(timer);reject(new Error('A4 렌더러 로딩 오류'))};
+    });
+    frame.srcdoc=html;
+    document.body.appendChild(frame);
+    try{
+      await done;
+      var doc=frame.contentDocument;
+      if(!doc||!doc.body)throw new Error('A4 렌더링 문서 접근 실패');
+      doc.body.appendChild(sheet);
+      // Abort rather than exporting an unreadable image if the print stylesheet did not load.
+      var kpi=sheet.querySelector('.rr-kpis>div');
+      if(!kpi||doc.defaultView.getComputedStyle(kpi).display!=='flex'){
+        throw new Error('A4 전용 스타일 로딩 실패');
+      }
+      if(doc.fonts&&doc.fonts.ready)await doc.fonts.ready;
+      await new Promise(function(resolve){
+        frame.contentWindow.requestAnimationFrame(function(){
+          frame.contentWindow.requestAnimationFrame(resolve);
+        });
+      });
+      return frame;
+    }catch(e){
+      frame.remove();
+      throw e;
+    }
+  }
+
+  function checkReportFit(sheet){
+    var reasons=[];
+    var within=function(container,target,name,margin){
+      if(!container||!target){reasons.push(name+' 요소 없음');return}
+      var a=container.getBoundingClientRect(),b=target.getBoundingClientRect();
+      if(b.bottom>a.bottom-(margin||0)+2||b.right>a.right+3||b.left<a.left-3){
+        reasons.push(name+' 영역 초과');
+      }
+    };
+    var head=sheet.querySelector('.rr-header'),title=sheet.querySelector('.rr-header h1'),date=sheet.querySelector('.rr-date');
+    if(head&&title&&date){
+      if(title.getBoundingClientRect().right>date.getBoundingClientRect().left-10){
+        reasons.push('제목/기준일 겹침');
+      }
+      within(head,title,'제목',0);
+    }
+    sheet.querySelectorAll('.rr-kpis>div').forEach(function(card,i){
+      within(card,card.querySelector('small'),'KPI '+(i+1),6);
+      within(card,card.querySelector('b'),'KPI 수치 '+(i+1),0);
+    });
+    var status=sheet.querySelector('.rr-status'),statusLast=sheet.querySelector('.rr-status-row:last-child');
+    within(status,statusLast,'운영상태',10);
+    var region=sheet.querySelector('.rr-regions'),grid=sheet.querySelector('.rr-region-grid');
+    within(region,grid,'지역별 현황',10);
+    var drivers=sheet.querySelector('.rr-drivers');
+    sheet.querySelectorAll('.rr-driver-cols>div').forEach(function(col,i){
+      var last=col.lastElementChild;
+      if(last&&last.classList.contains('rr-driver'))within(drivers,last,'설비 변동 '+(i+1),10);
+    });
+    var foot=sheet.querySelector('.rr-footer');
+    within(sheet,foot,'출처',1);
+    return reasons;
+  }
+
   async function save(){
     var c=ctx();
     if(!c||!c.DATA)return toast('데이터 로딩 후 다시 시도해 주세요.',false);
     if(typeof window.html2canvas!=='function')return toast('이미지 생성 모듈을 불러오지 못했습니다.',false);
-    var btn=$('#report-image'),old=btn?btn.innerHTML:'',sheet=null;
+    var btn=$('#report-image'),old=btn?btn.innerHTML:'',sheet=null,frame=null;
     if(btn){btn.disabled=true;btn.innerHTML='생성 중…'}
     try{
-      sheet=buildSheet(c.DATA,c.DETAIL,c.HISTORY);document.body.appendChild(sheet);
-      if(document.fonts&&document.fonts.ready)await document.fonts.ready;
-      await new Promise(function(r){setTimeout(r,100)});
-      var canvas=await window.html2canvas(sheet,{backgroundColor:'#ffffff',scale:1,useCORS:true,logging:false,width:1240,height:1754,windowWidth:1240,windowHeight:1754});
+      sheet=buildSheet(c.DATA,c.DETAIL,c.HISTORY);
+      frame=await createReportFrame(sheet);
+      // A4 title must stay in one line; tighten font only when it truly overflows.
+      var title=sheet.querySelector('.rr-header h1');
+      if(title&&title.scrollWidth>title.clientWidth+1){
+        var size=Number.parseFloat(frame.contentWindow.getComputedStyle(title).fontSize);
+        title.style.fontSize=Math.max(30,Math.floor(size*title.clientWidth/title.scrollWidth-1))+'px';
+      }
+      var problems=checkReportFit(sheet);
+      if(problems.length){
+        sheet.classList.add('rr-tight');
+        await new Promise(function(resolve){frame.contentWindow.requestAnimationFrame(resolve)});
+        problems=checkReportFit(sheet);
+      }
+      if(problems.length){
+        throw new Error('출력 배치 검증 실패 ('+problems.join(', ')+')');
+      }
+      var canvas=await window.html2canvas(sheet,{
+        backgroundColor:'#ffffff',scale:1,useCORS:true,logging:false,
+        width:1240,height:1754,windowWidth:1240,windowHeight:1754,
+        scrollX:0,scrollY:0
+      });
+      if(canvas.width!==1240||canvas.height!==1754)throw new Error('A4 이미지 크기 오류');
       var week=reportDate(c.DATA,c.DETAIL,c.HISTORY).replace(/[^\dA-Za-z가-힣_-]+/g,'-');
       var fileName='China_SM_Overview_Report_'+week+'.png';
       if(window.AndroidReport&&typeof window.AndroidReport.savePng==='function'){
-        var dataUrl=canvas.toDataURL('image/png',1);
+        var dataUrl=canvas.toDataURL('image/png');
         window.AndroidReport.savePng(dataUrl,fileName);
         toast('APK 저장 요청 완료 · 사진 앱에서 확인하세요.',true);
       }else{
-        var blob=await new Promise(function(resolve,reject){canvas.toBlob(function(b){b?resolve(b):reject(new Error('PNG 변환 실패'))},'image/png',1)});
+        var blob=await new Promise(function(resolve,reject){
+          canvas.toBlob(function(b){b?resolve(b):reject(new Error('PNG 변환 실패'))},'image/png');
+        });
         var url=URL.createObjectURL(blob),a=document.createElement('a');
         a.href=url;a.download=fileName;a.style.display='none';document.body.appendChild(a);a.click();a.remove();
         setTimeout(function(){URL.revokeObjectURL(url)},30000);
-        toast('A4 화이트 보고서 이미지가 생성되었습니다.',true);
+        toast('A4 보고서 이미지가 생성되었습니다.',true);
       }
     }catch(e){
       console.error(e);toast('보고서 이미지 생성 실패: '+(e&&e.message?e.message:e),false);
     }finally{
-      if(sheet)sheet.remove();
+      if(frame)frame.remove();
+      else if(sheet)sheet.remove();
       if(btn){btn.disabled=false;btn.innerHTML=old}
     }
   }
