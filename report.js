@@ -134,7 +134,7 @@
       '<meta charset="utf-8">'+
       '<meta name="viewport" content="width=1240,initial-scale=1,minimum-scale=1">'+
       '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap">'+
-      '<link rel="stylesheet" href="large-ui.css?v=20261010a4">'+
+      '<link rel="stylesheet" href="large-ui.css?v=20261010a5">'+
       '<style>html,body{width:1240px;height:1754px;margin:0;padding:0;overflow:hidden;-webkit-text-size-adjust:100%!important;text-size-adjust:100%!important}'+
       '.a4-report-sheet{position:relative!important;left:0!important;top:0!important;z-index:auto!important;'+
       'margin:0!important;transform:none!important;max-width:none!important}'+
@@ -225,7 +225,13 @@
         problems=checkReportFit(sheet);
       }
       if(problems.length){
-        throw new Error('출력 배치 검증 실패 ('+problems.join(', ')+')');
+        sheet.classList.add('rr-compact');
+        await new Promise(function(resolve){frame.contentWindow.requestAnimationFrame(resolve)});
+        problems=checkReportFit(sheet);
+      }
+      if(problems.length){
+        console.warn('A4 layout exceeded after compact fit:',problems);
+        throw new Error('A4 영역 초과: '+problems.join(', '));
       }
       var canvas=await window.html2canvas(sheet,{
         backgroundColor:'#ffffff',scale:1,useCORS:true,logging:false,
