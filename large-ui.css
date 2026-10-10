@@ -545,7 +545,7 @@ body{overflow-x:hidden}
 .a4-report-sheet .rr-status-row small{display:block;font-size:12px;line-height:1.3}
 .a4-report-sheet .rr-status-track{height:9px;margin:6px 0 5px}
 .a4-report-sheet .rr-regions{height:auto}
-.a4-report-sheet .rr-region-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));height:315px;gap:13px}
+.a4-report-sheet .rr-region-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));height:294px;gap:13px}
 .a4-report-sheet .rr-region{
   height:100%;display:flex;flex-direction:column;justify-content:space-between;
   padding:14px 15px;border-radius:11px;
@@ -579,7 +579,7 @@ body{overflow-x:hidden}
 .a4-report-sheet.rr-tight .rr-header h1{font-size:34px}
 .a4-report-sheet.rr-tight .rr-kpis b{font-size:28px}
 .a4-report-sheet.rr-tight .rr-status-list{gap:7px}
-.a4-report-sheet.rr-tight .rr-region-grid{height:305px}
+.a4-report-sheet.rr-tight .rr-region-grid{height:286px}
 .a4-report-sheet.rr-tight .rr-driver{padding:4px 0}
 .a4-report-sheet.rr-tight .rr-driver-top b{font-size:14px}
 .a4-report-sheet.rr-tight .rr-driver-meta,.a4-report-sheet.rr-tight .rr-driver-status{font-size:11px}
