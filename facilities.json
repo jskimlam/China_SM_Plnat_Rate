@@ -1,8 +1,8 @@
 {
-  "w_prev": "10/16",
-  "w_cur": "10/23",
-  "prev_date": "2026-10-16",
-  "cur_date": "2026-10-23",
+  "w_prev": "10/23",
+  "w_cur": "10/30",
+  "prev_date": "2026-10-23",
+  "cur_date": "2026-10-30",
   "rows": [
     {
       "id": "吉林石化-1",
@@ -132,9 +132,9 @@
       "company_en": "PetroChina Dushanzi",
       "capa": 320000,
       "rate_prev": 0.9,
-      "rate_cur": 0.9,
+      "rate_cur": 1,
       "status_prev": "7월 초부터 보수, 재가동 완료",
-      "status_cur": "7월 초부터 보수, 재가동 완료"
+      "status_cur": "정상 생산"
     },
     {
       "id": "天利高新-1",
@@ -164,9 +164,9 @@
       "company_cn": "陕西延长",
       "company_en": "Shaanxi Yanchang Petroleum",
       "capa": 120000,
-      "rate_prev": 0.6,
-      "rate_cur": 0.5,
-      "status_prev": "7월 11일부터 보수, 9월 말 재가동",
+      "rate_prev": 0.5,
+      "rate_cur": 0.6,
+      "status_prev": "부하를 낮춰 설비 조정",
       "status_cur": "부하를 낮춰 설비 조정"
     },
     {
@@ -178,7 +178,7 @@
       "rate_prev": 0,
       "rate_cur": 0,
       "status_prev": "정기보수로 가동 중단, 월말 재가동 예상",
-      "status_cur": "정기보수로 가동 중단, 월말 재가동 예상"
+      "status_cur": "정기보수로 가동 중단, 11월 초 재가동 예상"
     },
     {
       "id": "天津渤化-1",
@@ -418,9 +418,9 @@
       "company_en": "Ningbo Daxie Petrochemical",
       "capa": 280000,
       "rate_prev": 1,
-      "rate_cur": 1,
-      "status_prev": "부하 상향 후 정상 가동",
-      "status_cur": "정상 가동"
+      "rate_cur": 0.7,
+      "status_prev": "정상 가동",
+      "status_cur": "기술적 사유로 부하 하향"
     },
     {
       "id": "宁波华泰盛富-1",
@@ -508,7 +508,7 @@
       "rate_prev": 0.8,
       "rate_cur": 0.8,
       "status_prev": "낮은 부하율 운전",
-      "status_cur": "낮은 부하율 운전"
+      "status_cur": "11월에 45일간 보수 계획"
     },
     {
       "id": "连云港石化-1",
@@ -530,7 +530,7 @@
       "rate_prev": 0,
       "rate_cur": 0,
       "status_prev": "5월 말 보수, 현재 상류 설비 재가동",
-      "status_cur": "5월 말 보수, 현재 상류 설비 재가동"
+      "status_cur": "5월 말 보수, 재가동 계획 없음"
     },
     {
       "id": "江苏利士德1#-1",
@@ -616,9 +616,9 @@
       "company_en": "Baling Petrochemical (Sinopec)",
       "capa": 120000,
       "rate_prev": 0.7,
-      "rate_cur": 0.7,
+      "rate_cur": 0.8,
       "status_prev": "저부하 생산",
-      "status_cur": "저부하 생산"
+      "status_cur": "부하율 소폭 상향"
     },
     {
       "id": "中化泉州-1",
@@ -649,9 +649,9 @@
       "company_en": "CNOOC Shell Petrochemical (CSPC) #1",
       "capa": 700000,
       "rate_prev": 0.9,
-      "rate_cur": 0.9,
+      "rate_cur": 0.85,
       "status_prev": "9월 24일 가동 중단 후 국경절 연휴 이후 재가동",
-      "status_cur": "9월 24일 가동 중단 후 국경절 연휴 이후 재가동"
+      "status_cur": "정상 생산"
     },
     {
       "id": "中海壳牌2#-1",
@@ -659,10 +659,10 @@
       "company_cn": "中海壳牌2#",
       "company_en": "CNOOC Shell Petrochemical (CSPC) #2",
       "capa": 720000,
-      "rate_prev": 0,
-      "rate_cur": 0.8,
-      "status_prev": "10월 8일 가동 중단, 이번 주말 재가동 예상",
-      "status_cur": "10월 8일 가동 중단, 재가동 완료"
+      "rate_prev": 0.8,
+      "rate_cur": 0.85,
+      "status_prev": "10월 8일 가동 중단, 재가동 완료",
+      "status_cur": "정상 생산"
     },
     {
       "id": "广州石化-1",
@@ -738,8 +738,8 @@
       "capa": 80000,
       "rate_prev": 0,
       "rate_cur": 0,
-      "status_prev": "6월 27일부터 정기보수, 재가동 11월로 연기",
-      "status_cur": "6월 27일부터 보수, 10월 말 재가동 예상"
+      "status_prev": "6월 27일부터 보수, 10월 말 재가동 예상",
+      "status_cur": "6월 27일부터 보수, 11월 중순 재가동 예상"
     },
     {
       "id": "中海油东方-1",

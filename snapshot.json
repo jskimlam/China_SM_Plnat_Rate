@@ -17,10 +17,11 @@
     "10/02",
     "10/09",
     "10/16",
-    "10/23"
+    "10/23",
+    "10/30"
   ],
-  "w_prev": "10/16",
-  "w_cur": "10/23",
+  "w_prev": "10/23",
+  "w_cur": "10/30",
   "national": [
     {
       "week": "06/19",
@@ -122,25 +123,64 @@
       "week": "10/16",
       "total_capa": 22489000,
       "avg_rate": 0.6249455289252523,
-      "online_capa": 14054400.0
+      "online_capa": 14054400
     },
     {
       "week": "10/23",
       "total_capa": 22489000,
-      "online_capa": 14618400.0,
+      "online_capa": 14618400,
       "avg_rate": 0.6500244564009071,
+      "stopped": 18,
+      "low": 17
+    },
+    {
+      "week": "10/30",
+      "total_capa": 22489000,
+      "online_capa": 14591400,
+      "avg_rate": 0.6488238694472853,
       "stopped": 18,
       "low": 17
     }
   ],
   "changes": [
     {
+      "company": "PetroChina Dushanzi",
+      "region": "Xinjiang",
+      "capa": 320000,
+      "rate_prev": 0.9,
+      "rate_cur": 1,
+      "status_prev": "7월 초부터 보수, 재가동 완료",
+      "status_cur": "정상 생산",
+      "rate_changed": true,
+      "spark": [
+        1,
+        1,
+        1,
+        0.9,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0.9,
+        0.9,
+        0.9,
+        0.9,
+        0.9,
+        0.9,
+        0.9,
+        0.9,
+        1
+      ]
+    },
+    {
       "company": "Shaanxi Yanchang Petroleum",
       "region": "Shaanxi",
       "capa": 120000,
-      "rate_prev": 0.6,
-      "rate_cur": 0.5,
-      "status_prev": "7월 11일부터 보수, 9월 말 재가동",
+      "rate_prev": 0.5,
+      "rate_cur": 0.6,
+      "status_prev": "부하를 낮춰 설비 조정",
       "status_cur": "부하를 낮춰 설비 조정",
       "rate_changed": true,
       "spark": [
@@ -161,7 +201,39 @@
         0.6,
         0.6,
         0.6,
-        0.5
+        0.5,
+        0.6
+      ]
+    },
+    {
+      "company": "Tianjin Dagu Chemical",
+      "region": "Tianjin",
+      "capa": 500000,
+      "rate_prev": 0,
+      "rate_cur": 0,
+      "status_prev": "정기보수로 가동 중단, 월말 재가동 예상",
+      "status_cur": "정기보수로 가동 중단, 11월 초 재가동 예상",
+      "rate_changed": false,
+      "spark": [
+        0.75,
+        0.75,
+        0.75,
+        0.75,
+        0.75,
+        0.75,
+        0.75,
+        0.75,
+        0.75,
+        0.75,
+        0.75,
+        0.75,
+        0.75,
+        0.75,
+        0.75,
+        0.7,
+        0,
+        0,
+        0
       ]
     },
     {
@@ -169,10 +241,10 @@
       "region": "Zhejiang",
       "capa": 280000,
       "rate_prev": 1,
-      "rate_cur": 1,
-      "status_prev": "부하 상향 후 정상 가동",
-      "status_cur": "정상 가동",
-      "rate_changed": false,
+      "rate_cur": 0.7,
+      "status_prev": "정상 가동",
+      "status_cur": "기술적 사유로 부하 하향",
+      "rate_changed": true,
       "spark": [
         1,
         1,
@@ -191,17 +263,142 @@
         0.95,
         0.75,
         1,
-        1
+        1,
+        0.7
+      ]
+    },
+    {
+      "company": "Zhejiang Petrochemical (Rongsheng) #4",
+      "region": "Zhejiang",
+      "capa": 600000,
+      "rate_prev": 0.8,
+      "rate_cur": 0.8,
+      "status_prev": "낮은 부하율 운전",
+      "status_cur": "11월에 45일간 보수 계획",
+      "rate_changed": false,
+      "spark": [
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8
+      ]
+    },
+    {
+      "company": "Jiangsu Hongwei Chemical",
+      "region": "Jiangsu",
+      "capa": 450000,
+      "rate_prev": 0,
+      "rate_cur": 0,
+      "status_prev": "5월 말 보수, 현재 상류 설비 재가동",
+      "status_cur": "5월 말 보수, 재가동 계획 없음",
+      "rate_changed": false,
+      "spark": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "company": "Baling Petrochemical (Sinopec)",
+      "region": "Hunan",
+      "capa": 120000,
+      "rate_prev": 0.7,
+      "rate_cur": 0.8,
+      "status_prev": "저부하 생산",
+      "status_cur": "부하율 소폭 상향",
+      "rate_changed": true,
+      "spark": [
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.8,
+        0.75,
+        0.75,
+        0.75,
+        0.75,
+        0.75,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.8
+      ]
+    },
+    {
+      "company": "CNOOC Shell Petrochemical (CSPC) #1",
+      "region": "Guangdong",
+      "capa": 700000,
+      "rate_prev": 0.9,
+      "rate_cur": 0.85,
+      "status_prev": "9월 24일 가동 중단 후 국경절 연휴 이후 재가동",
+      "status_cur": "정상 생산",
+      "rate_changed": true,
+      "spark": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0,
+        0,
+        0.9,
+        0.9,
+        0.85
       ]
     },
     {
       "company": "CNOOC Shell Petrochemical (CSPC) #2",
       "region": "Guangdong",
       "capa": 720000,
-      "rate_prev": 0,
-      "rate_cur": 0.8,
-      "status_prev": "10월 8일 가동 중단, 이번 주말 재가동 예상",
-      "status_cur": "10월 8일 가동 중단, 재가동 완료",
+      "rate_prev": 0.8,
+      "rate_cur": 0.85,
+      "status_prev": "10월 8일 가동 중단, 재가동 완료",
+      "status_cur": "정상 생산",
       "rate_changed": true,
       "spark": [
         1,
@@ -221,7 +418,8 @@
         0.7,
         0.5,
         0,
-        0.8
+        0.8,
+        0.85
       ]
     },
     {
@@ -230,12 +428,13 @@
       "capa": 80000,
       "rate_prev": 0,
       "rate_cur": 0,
-      "status_prev": "6월 27일부터 정기보수, 재가동 11월로 연기",
-      "status_cur": "6월 27일부터 보수, 10월 말 재가동 예상",
+      "status_prev": "6월 27일부터 보수, 10월 말 재가동 예상",
+      "status_cur": "6월 27일부터 보수, 11월 중순 재가동 예상",
       "rate_changed": false,
       "spark": [
         0.9,
         0.9,
+        0,
         0,
         0,
         0,
@@ -283,19 +482,19 @@
     {
       "region": "Xinjiang",
       "capa": 362000,
-      "rate": 0.8767955801104972,
+      "rate": 0.9651933701657458,
       "count": 2
     },
     {
       "region": "Ningxia",
       "capa": 200000,
-      "rate": 0.0,
+      "rate": 0,
       "count": 1
     },
     {
       "region": "Shaanxi",
       "capa": 120000,
-      "rate": 0.5,
+      "rate": 0.6,
       "count": 1
     },
     {
@@ -331,7 +530,7 @@
     {
       "region": "Zhejiang",
       "capa": 4415000,
-      "rate": 0.7159682899207248,
+      "rate": 0.6969422423556059,
       "count": 10
     },
     {
@@ -343,13 +542,13 @@
     {
       "region": "Hubei",
       "capa": 27000,
-      "rate": 0.0,
+      "rate": 0,
       "count": 1
     },
     {
       "region": "Hunan",
       "capa": 120000,
-      "rate": 0.7,
+      "rate": 0.8,
       "count": 1
     },
     {
@@ -361,7 +560,7 @@
     {
       "region": "Guangdong",
       "capa": 2790000,
-      "rate": 0.7207885304659498,
+      "rate": 0.7211469534050179,
       "count": 7
     },
     {
@@ -378,13 +577,13 @@
     }
   ],
   "status_mix": {
-    "good": 11120000,
-    "warning": 5362000,
-    "serious": 1280000,
+    "good": 10680000,
+    "warning": 5522000,
+    "serious": 1560000,
     "critical": 4727000
   },
   "total_capa_latest": 22489000,
   "facility_count": 68,
   "source_note": "2026-10-16 rates verified against ICIS China Styrene report pp.6-9. 68-plant capacity sum: 22,489,000 mt/y; source aggregate caption: 22,509,000 mt/y. The existing 68-plant capacity-weighted method is retained. ICIS headline operating rate: 62.5%.",
-  "generated_at": "2026-10-24T12:55:35+09:00"
+  "generated_at": "2026-10-31T20:05:26+09:00"
 }
