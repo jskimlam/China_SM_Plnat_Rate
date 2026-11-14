@@ -1,8 +1,8 @@
 {
-  "w_prev": "10/30",
-  "w_cur": "11/06",
-  "prev_date": "2026-10-30",
-  "cur_date": "2026-11-06",
+  "w_prev": "11/06",
+  "w_cur": "11/13",
+  "prev_date": "2026-11-06",
+  "cur_date": "2026-11-13",
   "rows": [
     {
       "id": "吉林石化-1",
@@ -10,9 +10,9 @@
       "company_cn": "吉林石化",
       "company_en": "Jilin Petrochemical (PetroChina)",
       "capa": 460000,
-      "rate_prev": 0.7,
+      "rate_prev": 0.6,
       "rate_cur": 0.6,
-      "status_prev": "정상 생산",
+      "status_prev": "감산 생산",
       "status_cur": "감산 생산"
     },
     {
@@ -21,9 +21,9 @@
       "company_cn": "吉林石化",
       "company_en": "Jilin Petrochemical (PetroChina)",
       "capa": 600000,
-      "rate_prev": 0.65,
+      "rate_prev": 0.6,
       "rate_cur": 0.6,
-      "status_prev": "정상 생산",
+      "status_prev": "감산 생산",
       "status_cur": "감산 생산"
     },
     {
@@ -77,7 +77,7 @@
       "company_en": "Beifang Huajin Chemical",
       "capa": 150000,
       "rate_prev": 0.9,
-      "rate_cur": 0.9,
+      "rate_cur": 0.8,
       "status_prev": "정상 생산",
       "status_cur": "정상 생산"
     },
@@ -98,9 +98,9 @@
       "company_cn": "恒力石化",
       "company_en": "Hengli Petrochemical",
       "capa": 720000,
-      "rate_prev": 1,
+      "rate_prev": 0.8,
       "rate_cur": 0.8,
-      "status_prev": "정상 생산",
+      "status_prev": "경제적 사유로 감산",
       "status_cur": "경제적 사유로 감산"
     },
     {
@@ -164,10 +164,10 @@
       "company_cn": "陕西延长",
       "company_en": "Shaanxi Yanchang Petroleum",
       "capa": 120000,
-      "rate_prev": 0.6,
-      "rate_cur": 0.5,
+      "rate_prev": 0.5,
+      "rate_cur": 0,
       "status_prev": "부하를 낮춰 설비 조정",
-      "status_cur": "부하를 낮춰 설비 조정"
+      "status_cur": "가동을 중단하고 설비 조정, 11월 말 재가동 예상"
     },
     {
       "id": "天津大沽-1",
@@ -176,9 +176,9 @@
       "company_en": "Tianjin Dagu Chemical",
       "capa": 500000,
       "rate_prev": 0,
-      "rate_cur": 0,
+      "rate_cur": 0.6,
       "status_prev": "정기보수로 가동 중단, 11월 초 재가동 예상",
-      "status_cur": "정기보수로 가동 중단, 11월 초 재가동 예상"
+      "status_cur": "10월 중순부터 가동 중단, 11월 9일 재가동"
     },
     {
       "id": "天津渤化-1",
@@ -219,9 +219,9 @@
       "company_cn": "唐山旭阳",
       "company_en": "Tangshan Xuyang (Xuyang Group)",
       "capa": 300000,
-      "rate_prev": 0.9,
+      "rate_prev": 1,
       "rate_cur": 1,
-      "status_prev": "소폭 감산",
+      "status_prev": "정상 생산",
       "status_cur": "정상 생산"
     },
     {
@@ -266,7 +266,7 @@
       "rate_prev": 0.85,
       "rate_cur": 0.85,
       "status_prev": "정상 생산, 10월 보수 예상",
-      "status_cur": "정상 생산, 10월 보수 예상"
+      "status_cur": "정상 생산"
     },
     {
       "id": "利华益1#-1",
@@ -310,7 +310,7 @@
       "rate_prev": 0.7,
       "rate_cur": 0.7,
       "status_prev": "9월 4일 합격품 생산, 저부하 운전",
-      "status_cur": "9월 4일 합격품 생산, 저부하 운전"
+      "status_cur": "저부하 생산"
     },
     {
       "id": "弘润石化-1",
@@ -319,9 +319,9 @@
       "company_en": "Hongrun Petrochemical",
       "capa": 120000,
       "rate_prev": 0.85,
-      "rate_cur": 0.85,
+      "rate_cur": 0,
       "status_prev": "정상 생산",
-      "status_cur": "정상 생산"
+      "status_cur": "11월 6일부터 가동 중단 및 보수"
     },
     {
       "id": "青岛海湾-1",
@@ -329,9 +329,9 @@
       "company_cn": "青岛海湾",
       "company_en": "Qingdao Haiwan Chemical",
       "capa": 500000,
-      "rate_prev": 0.6,
+      "rate_prev": 0.7,
       "rate_cur": 0.7,
-      "status_prev": "감산 운전",
+      "status_prev": "부하율 소폭 상향",
       "status_cur": "부하율 소폭 상향"
     },
     {
@@ -341,9 +341,9 @@
       "company_en": "Wanhua Chemical",
       "capa": 650000,
       "rate_prev": 0.9,
-      "rate_cur": 0.9,
+      "rate_cur": 0.7,
       "status_prev": "정상 생산",
-      "status_cur": "정상 생산"
+      "status_cur": "감산 생산"
     },
     {
       "id": "山东裕龙-1",
@@ -365,7 +365,7 @@
       "rate_prev": 0,
       "rate_cur": 0,
       "status_prev": "9월 2일부터 보수, 11월 15일 재가동 계획",
-      "status_cur": "9월 2일부터 보수, 11월 15일 재가동 계획"
+      "status_cur": "9월 2일부터 보수, 재가동 계획을 12월로 연기"
     },
     {
       "id": "安徽昊源-1",
@@ -417,8 +417,8 @@
       "company_cn": "宁波大榭",
       "company_en": "Ningbo Daxie Petrochemical",
       "capa": 280000,
-      "rate_prev": 0.7,
-      "rate_cur": 0.65,
+      "rate_prev": 0.65,
+      "rate_cur": 0.6,
       "status_prev": "기술적 사유로 부하 하향",
       "status_cur": "기술적 사유로 부하 하향"
     },
@@ -439,7 +439,7 @@
       "company_cn": "镇利化学1#",
       "company_en": "Zhenli Chemical #1",
       "capa": 600000,
-      "rate_prev": 0.9,
+      "rate_prev": 1,
       "rate_cur": 1,
       "status_prev": "정상 생산",
       "status_cur": "정상 생산"
@@ -472,9 +472,9 @@
       "company_cn": "浙石化1#",
       "company_en": "Zhejiang Petrochemical (Rongsheng) #1",
       "capa": 600000,
-      "rate_prev": 0.8,
+      "rate_prev": 0.85,
       "rate_cur": 0.85,
-      "status_prev": "낮은 부하율 운전",
+      "status_prev": "부하율 소폭 상향",
       "status_cur": "부하율 소폭 상향"
     },
     {
@@ -483,9 +483,9 @@
       "company_cn": "浙石化2#",
       "company_en": "Zhejiang Petrochemical (Rongsheng) #2",
       "capa": 600000,
-      "rate_prev": 0.8,
+      "rate_prev": 0.85,
       "rate_cur": 0.85,
-      "status_prev": "낮은 부하율 운전",
+      "status_prev": "부하율 소폭 상향",
       "status_cur": "부하율 소폭 상향"
     },
     {
@@ -494,9 +494,9 @@
       "company_cn": "浙石化3#",
       "company_en": "Zhejiang Petrochemical (Rongsheng) #3",
       "capa": 600000,
-      "rate_prev": 0.8,
+      "rate_prev": 0.85,
       "rate_cur": 0.85,
-      "status_prev": "낮은 부하율 운전",
+      "status_prev": "부하율 소폭 상향",
       "status_cur": "부하율 소폭 상향"
     },
     {
@@ -505,7 +505,7 @@
       "company_cn": "浙石化4#",
       "company_en": "Zhejiang Petrochemical (Rongsheng) #4",
       "capa": 600000,
-      "rate_prev": 0.8,
+      "rate_prev": 0.85,
       "rate_cur": 0.85,
       "status_prev": "11월에 45일간 보수 계획",
       "status_cur": "11월에 45일간 보수 계획"
@@ -519,7 +519,7 @@
       "rate_prev": 0,
       "rate_cur": 0,
       "status_prev": "9월 21일 가동 중단, 재가동 계획 없음",
-      "status_cur": "9월 21일 가동 중단, 재가동 계획 없음"
+      "status_cur": "9월 21일 가동 중단, 12월 재가동 계획"
     },
     {
       "id": "江苏虹威-1",
@@ -582,10 +582,10 @@
       "company_cn": "扬子巴斯夫",
       "company_en": "Yangtze BASF (Yangzi-BASF)",
       "capa": 120000,
-      "rate_prev": 0.7,
+      "rate_prev": 0.6,
       "rate_cur": 0.6,
-      "status_prev": "저부하 생산",
-      "status_cur": "부하율 소폭 하향"
+      "status_prev": "부하율 소폭 하향",
+      "status_cur": "저부하 생산"
     },
     {
       "id": "新浦化学-1",
@@ -616,7 +616,7 @@
       "company_en": "Baling Petrochemical (Sinopec)",
       "capa": 120000,
       "rate_prev": 0.8,
-      "rate_cur": 0.8,
+      "rate_cur": 1,
       "status_prev": "부하율 소폭 상향",
       "status_cur": "부하율 소폭 상향"
     },
@@ -626,9 +626,9 @@
       "company_cn": "中化泉州",
       "company_en": "Sinochem Quanzhou",
       "capa": 450000,
-      "rate_prev": 0.9,
+      "rate_prev": 0.7,
       "rate_cur": 0.7,
-      "status_prev": "정상 생산",
+      "status_prev": "부하를 낮춰 정비",
       "status_cur": "부하를 낮춰 정비"
     },
     {
@@ -714,7 +714,7 @@
       "company_cn": "广东石化",
       "company_en": "Guangdong Petrochemical",
       "capa": 800000,
-      "rate_prev": 0.9,
+      "rate_prev": 0.8,
       "rate_cur": 0.8,
       "status_prev": "12월 5일부터 전면 대정비 계획",
       "status_cur": "12월 5일부터 전면 대정비 계획"
